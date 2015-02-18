@@ -97,7 +97,7 @@ INSTALLED_APPS = (
     'civmail',     # Newsletter i obsługa maili
     'articles',    # Statyczne artykuły - support etc.
     'bookmarks',   # Zakładki do treści dla użytkowników
-    
+
     # django-activity-stream - powinien być ostatni na liście
     'actstream',
 )

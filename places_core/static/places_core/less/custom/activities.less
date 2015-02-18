@@ -290,11 +290,18 @@
             width: 100%;
             max-width: 200px;
             display: inline-block;
+            vertical-align: top;
         }
         @media(max-width: 650px){
             max-width: none;
+            width: 33%;
 
-
+        }
+        @media(max-width: 500px){
+            width: 100%;
+            max-width: 270px;
+            display: block;
+            margin: 0 auto !important;
         }
     }
 
@@ -315,9 +322,9 @@
 }
     .locBoxHeader{
         background-image: url('../img/locationBox.png');
-        background-position: center center;
+        background-position: center center !important;
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: cover !important;
         background-color: #0083fb !important;
         padding: 10px;
 
@@ -430,7 +437,6 @@
                 }
             }
         }
-
     }
     .locBoxCat{
         background-color: #84bd00;
@@ -450,6 +456,11 @@
         max-height: 54px;
         min-height: 54px;
         overflow: hidden;
+        p{
+            img{
+                display: none;
+            }
+        }
         @media(max-width: 991px){
             max-height: none;
         }
