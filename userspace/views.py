@@ -561,7 +561,10 @@ def register(request):
                 # Create auth token for REST api:
                 token = Token.objects.create(user=user)
                 token.save()
-            except Exception:
+            except Exception as ex:
+
+                logger.error(u"[{}]: {}".format(timezone.now(), ex))
+
                 # Form valid, but user already exists
                 ctx = {
                     'form': RegisterForm(initial={
@@ -589,7 +592,7 @@ def register(request):
                 # name conflicts (and allow another registration).
                 user.delete()
 
-                logger.error(u"[{}]: {}".format(timezone.now(), ex.message))
+                logger.error(u"[{}]: {}".format(timezone.now(), ex))
 
                 return render(request, 'userspace/register-failed.html', {
                     'title': _("Registration failed")
@@ -608,7 +611,7 @@ def register(request):
                 # User is registered and link is created, but there was errors
                 # during sanding email, so just show static page with link.
 
-                logger.error(u"[{}]: {}".format(timezone.now(), ex.message))
+                logger.error(u"[{}]: {}".format(timezone.now(), ex))
 
                 return render(request, 'userspace/register-errors.html', {
                     'title': _("Registration"),
