@@ -109,8 +109,43 @@ class LocationLocaleManager(models.Manager):
                                 lambda x: x.__unicode__(), get_language())
 
 
+class BackgroundModelMixin(object):
+    """ Mixin dla modeli obsługujących obraz tła. """
+    def get_image_url(self, size=(1920,300), retina=False):
+
+        # Get first part of image url
+        url = self.image.url.split('/')
+        url.pop()
+        url = '/'.join(url)
+
+        # Rename files using gallery manager
+        # FIXME: this behavior should be bound to ImageManager
+        try:
+            im = IM(self.image.path)
+        except Exception:
+            return self.image.url
+
+        if retina:
+            suffix = "{}x{}@2x".format(size[0], size[1])
+            filename = im.create_filename(suffix=suffix).split('/')[-1]
+        else:
+            suffix = "{}x{}".format(size[0], size[1])
+            filename = im.create_filename(suffix=suffix).split('/')[-1]
+        return u"{}/{}".format(url, filename)
+
+    def thumb_url(self, retina=False):
+        return self.get_image_url((270,190))
+
+    def background_url(self):
+        return self.get_image_url()
+
+    def retina_background_url(self):
+        return self.get_image_url(retina=True)
+
+
+
 @python_2_unicode_compatible
-class Location(models.Model):
+class Location(models.Model, BackgroundModelMixin):
     """ Basic location model. """
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
@@ -263,37 +298,6 @@ class Location(models.Model):
     def get_cropped_image(self):
         """ Method to get cropped background for list views. """
         return rename_background_file(self.image.url)
-
-    def get_image_url(self, size=(1920,300), retina=False):
-
-        # Get first part of image url
-        url = self.image.url.split('/')
-        url.pop()
-        url = '/'.join(url)
-
-        # Rename files using gallery manager
-        # FIXME: this behavior should be bound to ImageManager
-        try:
-            im = IM(self.image.path)
-        except Exception:
-            return self.image.url
-
-        if retina:
-            suffix = "{}x{}@2x".format(size[0], size[1])
-            filename = im.create_filename(suffix=suffix).split('/')[-1]
-        else:
-            suffix = "{}x{}".format(size[0], size[1])
-            filename = im.create_filename(suffix=suffix).split('/')[-1]
-        return u"{}/{}".format(url, filename)
-
-    def thumb_url(self, retina=False):
-        return self.get_image_url((270,190))
-
-    def background_url(self):
-        return self.get_image_url()
-
-    def retina_background_url(self):
-        return self.get_image_url(retina=True)
 
     def content_objects(self):
         """ Zwraca listę obiektów powiązanych z tą lokalizacją (idee, dyskusje,
