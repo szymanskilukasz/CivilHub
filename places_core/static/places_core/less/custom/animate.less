@@ -36,6 +36,33 @@
     }
 }
 
+.jump-marker{
+    animation: jumpMarker 3s infinite;
+    -webkit-animation: jumpMarker 3s infinite;
+    -moz-animation: jumpMarker 3s infinite;
+}
+@keyframes jumpMarker{
+    0%{
+        transform: translateY(0);
+    }
+    50%{
+        transform: translateY(-3px);
+    }
+    100%{
+        transform: translateY(0);
+    }
+}
+@-webkit-keyframes jumpMarker{
+    0%{
+        -webkit-transform: translateY(0);
+    }
+    50%{
+        -webkit-transform: translateY(-3px);
+    }
+    100%{
+        -webkit-transform: translateY(0);
+    }
+}
 
 @keyframes fadeInCircle {
   0% {
