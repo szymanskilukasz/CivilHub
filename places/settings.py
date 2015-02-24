@@ -205,7 +205,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_uid',
     'social.pipeline.social_auth.auth_allowed',
     'social.pipeline.social_auth.social_user',
-    'social.pipeline.user.get_username',
+    'places_core.social_auth.get_username',
     'places_core.social_auth.set_twitter_email',
     'places_core.social_auth.validate_email',
     'social.pipeline.user.create_user',
