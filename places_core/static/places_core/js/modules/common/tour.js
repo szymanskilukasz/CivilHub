@@ -17,7 +17,7 @@ require(['jquery', 'tour'], function ($) {
       var tour = new Tour({
         steps: [{
           element: "#tour-location-name",
-          title: gettext("You are here"),,
+          title: gettext("You are here"),
           content: gettext("Right now you can see the location you are currently in."),
           path: rootUrl
         }, {
@@ -45,13 +45,13 @@ require(['jquery', 'tour'], function ($) {
           path: rootUrl + "news/"
         }, {
           element: "#tour-Discussions",
-          gettext("Discussions"),
+          title: gettext("Discussions"),
           content: gettext("Here you can view or join discussions of a given place. If you feel like adding a new discussion topic you are also free to do so."),
           path: rootUrl + "discussion/"
         }, {
           element: "#tour-Ideas",
           title: gettext("Ideas"),
-            content: gettext("View ideas of other users and vote on them. You can also share your creative ideas with others."),
+          content: gettext("View ideas of other users and vote on them. You can also share your creative ideas with others."),
           path: rootUrl + "ideas/"
         }, {
           element: "#tour-votes",
