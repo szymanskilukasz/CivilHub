@@ -10,6 +10,11 @@ window.GOOGLE_DATA = {
     id: '{{ plus_id }}'
 }
 </script>
+{% if errors %}<script>
+window.formErrors = [{% for e in errors %}
+    {"{{ e }}": "{{ e.message }}"},
+{% endfor %}];
+</script>{% endif %}
 <script data-main="{% static 'places_core' %}/js/{% js_path %}/static-home.js" src="{% static 'places_core' %}/includes/require/require.js"></script>
 {% endblock %}
 
@@ -18,7 +23,7 @@ window.GOOGLE_DATA = {
 {% block navigation %}{% endblock %}
 
 {% block content %}
-<div id="register-Page"> 
+<div id="register-Page">
 
     <div class="logo-Home"></div>
 	    <div class="features-Home">

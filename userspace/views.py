@@ -384,6 +384,24 @@ class UserActivityView(TemplateView):
         return super(UserActivityView, self).get(request)
 
 
+def register_credentials_check(request):
+    """
+    Sprawdzamy nazwę użytkownika oraz email na potrzeby formularza rejestracji.
+    """
+    if not request.method == 'POST':
+        raise Http404
+    email = request.POST.get('email')
+    uname = request.POST.get('uname')
+    ctx = {'errors': []}
+    if email and User.objects.filter(email=email).count():
+        ctx['errors'].append({'label': 'email',
+            'message': u"User with this email address already exists"})
+    if uname and User.objects.filter(username=uname).count():
+        ctx['errors'].append({'label': 'username',
+            'message': u"User with this username already exists"})
+    return HttpResponse(json.dumps(ctx), content_type="application/json")
+
+
 class SetTwitterEmailView(FormView):
     """
     W tym widoku użytkownik, który rejestruje się przy pomocy konta na Twitterze
