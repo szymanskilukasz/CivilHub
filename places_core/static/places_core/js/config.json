@@ -29,7 +29,11 @@
         "categoryAxisRenderer": "includes/jqplot/plugins/jqplot.categoryAxisRenderer",
         "barRenderer": "includes/jqplot/plugins/jqplot.barRenderer",
         "tubular": "includes/tubular/jquery.tubular.1.0",
-        "tour": "includes/tour/bootstrap-tour"
+        "tour": "includes/tour/bootstrap-tour",
+        "hammer": "includes/mapplic/hammer",
+        "jeasing": "includes/mapplic/jquery.easing",
+        "mapplic": "includes/mapplic/mapplic",
+        "jmousewheel": "includes/mapplic/jquery.mousewheel"
     },
 
     "shim": {
@@ -87,6 +91,22 @@
         
         "worldmap": {
             "deps": ["vector"]
+        },
+
+        "hammer": {
+            "deps": ["jquery"]
+        },
+
+        "jeasing": {
+            "deps": ["jquery"]
+        },
+
+        "jmousewheel": {
+            "deps": ["jquery"]
+        },
+
+        "mapplic": {
+            "deps": ["jquery"]
         },
         
         "plot": {

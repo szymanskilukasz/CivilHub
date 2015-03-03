@@ -21,7 +21,7 @@ require.config({
         backbone: 'includes/backbone/backbone',
         tagsinput: 'includes/jquery/jquery.tagsinput',
         bootbox: 'includes/bootstrap/bootbox',
-        hammer: 'includes/mapplic/hammer',
+        "hammer": 'includes/mapplic/hammer',
         jeasing: 'includes/mapplic/jquery.easing',
         jmousewheel: 'includes/mapplic/jquery.mousewheel',
         mapplic: 'includes/mapplic/mapplic'
@@ -56,7 +56,7 @@ require.config({
             deps: ['jquery']
         },
 
-        hammer: {
+        "hammer": {
             deps: ['jquery']
         },
 
@@ -102,7 +102,7 @@ function ($) {
 
     $(window).load(function() {
 
-        $('.mapplic-sidebar').prepend('<div class="mapplicCountry"><p class="mappCountry">'gettext("Country")'</p><p>'gettext("Search by location")'<span class="fa fa-caret-down"></span></p></div>');
+        $('.mapplic-sidebar').prepend('<div class="mapplicCountry"><p class="mappCountry">' + gettext("Country") + '</p><p>' + gettext("Search by location") + '<span class="fa fa-caret-down"></span></p></div>');
 
         $('.mapplicCountry').click(function(){
             $('.mapplic-search-form, .mapplic-list-container').toggle();

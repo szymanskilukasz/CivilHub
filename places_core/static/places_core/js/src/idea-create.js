@@ -63,12 +63,17 @@ require.config({
         
         tagsinput: {
             deps: ["jqueryui"]
+        },
+
+        "redactor": {
+            "deps": ["jquery"]
         }
     }
 });
 
 require(['jquery',
          'jqueryui',
+         'redactor',
          'js/modules/common',
          'js/modules/editor/plugins/uploader',
          'js/modules/locations/follow',
