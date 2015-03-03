@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap 101 Template</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script>
+    (function ($) {
+
+      "use strict";
+
+      function getParams () {
+        try {
+          var url = document.location.href
+            .replace('#', '').split('?')[1].split('&');
+        } catch (e) {
+          return {};
+        }
+        var params = {}, tmp;
+        for (var i = 0; i < url.length; i++) {
+          tmp = url[i].split('=');
+          params[tmp[0].trim()] = tmp[1].trim();
+        }
+        return params;
+      }
+
+      $(document).ready(function () {
+        $.post('/report/test_token_view/', {token: getParams()['access_token']});
+      });
+
+    })(jQuery);
+    </script>
+  </body>
+</html>
