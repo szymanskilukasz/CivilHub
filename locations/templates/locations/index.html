@@ -3,21 +3,6 @@
 
 {% cache 600 header location.slug %}
 
-{% block extra_styles %}
-<style type="text/css">
-.location-logo {
-    background-image: url({{ location.background_url }});
-}
-@media 
-(-webkit-min-device-pixel-ratio: 2), 
-(min-resolution: 192dpi) {
-    .location-logo {
-        background-image: url({{ location.retina_background_url }});
-    }
-}
-</style>
-{% endblock %}
-
 {% block geometa %}{% if location.latitude and location.longitude %}
 <meta name="DC.title" content="{{ location }}" />
 <meta name="geo.region" content="{{ location.country_code }}" />
@@ -31,6 +16,18 @@
 {% endblock %}
 
 {% block header %}
+<style type="text/css">
+.location-logo {
+    background-image: url({{ location.background_url }});
+}
+@media 
+(-webkit-min-device-pixel-ratio: 2), 
+(min-resolution: 192dpi) {
+    .location-logo {
+        background-image: url({{ location.retina_background_url }});
+    }
+}
+</style>
 <nav id="location-chain-menu" class="navbar navbar-default" role="navigation">
 <div class="container">
 <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1" style="height: 1px;">

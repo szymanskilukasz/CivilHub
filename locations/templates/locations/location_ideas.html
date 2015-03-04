@@ -3,7 +3,8 @@
 {% block title %} {{ location }}, {% trans "Ideas" %} | CivilHub {% endblock %}
 {% block require_scripts %}
 <script>window.pageSize = {% page_size %};</script>
-<script data-main="{% static 'places_core' %}/js/{% js_path %}/idea-list.js" src="{% static 'places_core' %}/includes/require/require.js"></script>
+<script src="{% static 'places_core' %}/includes/require/require.js"></script>
+<script src="{% static 'places_core' %}/js/{% js_path %}/idea-list.js"></script>
 {% endblock %}
 
 {% block topbar %}
