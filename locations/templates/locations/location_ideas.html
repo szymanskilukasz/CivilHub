@@ -7,6 +7,9 @@
 {% endblock %}
 
 {% block topbar %}
+
+<input type="hidden" id="rest-api-url" value="/api-locations/contents/?pk={{ location.pk }}&content=idea" />
+
 <nav id="filter-navbar" class="navbar navbar-default" role="navigation">
     <div class="collapse navbar-collapse" id="bs-navbar-collapse">
         <ul class="nav navbar-nav">
