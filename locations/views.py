@@ -90,6 +90,7 @@ class LocationSummaryAPI(APIView):
         `time`     - Zakres czasowy (year, week, month, day). Domyślnie `any`<br>
         `haystack` - Fraza do wyszukania w tytułach<br>
         `category` - ID kategorii do przeszukania (jeżeli dotyczy)<br>
+        `per_page` - Ilość elementów do pokazania na jednej stronie (max 100)<br>
     """
     paginate_by = 50
     permission_classes = (rest_permissions.AllowAny,)
@@ -107,6 +108,12 @@ class LocationSummaryAPI(APIView):
             page = int(request.QUERY_PARAMS.get('page'))
         except (ValueError, TypeError):
             page = 1
+
+        # Ilość elementów na stronę
+        try:
+            per_page = int(request.QUERY_PARAMS.get('per_page'))
+        except (ValueError, TypeError):
+            per_page = self.paginate_by
 
         # Rodzaj typu zawartości (albo wszystkie)
         content = request.QUERY_PARAMS.get('content', 'all')
@@ -149,7 +156,7 @@ class LocationSummaryAPI(APIView):
         elif sortby == 'user':
             content_objects.sort(key=lambda x: x['creator']['name'].split(' ')[1])
 
-        paginator = Paginator(content_objects, self.paginate_by)
+        paginator = Paginator(content_objects, per_page)
         try:
             items = paginator.page(page)
         except EmptyPage:

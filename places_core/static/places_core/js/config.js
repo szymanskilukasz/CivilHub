@@ -138,3 +138,11 @@ require.config({
         "barRenderer": { "deps": ["plot"] }
     }
 });
+
+// Tutaj można umieścić skrypty i konfiguracje, które mają się uruchomić
+// przed załadowaniem wszystkich innych skryptów na stronie. W przykładzie
+// poniżej ustawiamy globalnie język dla moment.js.
+
+require(['moment'], function (moment) {
+    moment.locale(CivilApp.language);
+});

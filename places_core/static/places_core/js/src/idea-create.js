@@ -10,8 +10,7 @@ require([window.STATIC_URL + "/js/config.js"], function () {
            'js/modules/common',
            'js/modules/locations/follow',
            'js/modules/inviter/userinviter',
-           'js/modules/ideas/idea-form',
-           'js/modules/ideas/category-creator'],
+           'js/modules/ideas/idea-form'],
 
   function ($) {
       
