@@ -7,6 +7,7 @@
 
 require(['jquery',
          'jqueryui',
+         'js/modules/editor/plugins/uploader',
          'redactor',
          'js/modules/ui/mapinput',
          'tagsinput',
