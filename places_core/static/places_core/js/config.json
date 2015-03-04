@@ -38,6 +38,14 @@
 
     "shim": {
         
+        "jqueryui": {
+            "deps": ["jquery"]
+        },
+
+        "tagsinput": {
+            "deps": ["jqueryui"]
+        },
+
         "jpaginate": {
             "deps": ["jquery"]
         },

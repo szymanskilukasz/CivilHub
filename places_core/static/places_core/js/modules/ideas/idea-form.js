@@ -6,6 +6,7 @@
 // -----------------------------------------------------------------------------
 
 require(['jquery',
+         'jqueryui',
          'redactor',
          'js/modules/ui/mapinput',
          'tagsinput',

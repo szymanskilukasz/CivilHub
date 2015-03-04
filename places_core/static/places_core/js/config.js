@@ -51,6 +51,14 @@ require.config({
     },
 
     "shim": {
+
+        "jqueryui": {
+            "deps": ["jquery"]
+        },
+
+        "tagsinput": {
+            "deps": ["jqueryui"]
+        },
         
         "jpaginate": {
             "deps": ["jquery"]
@@ -73,10 +81,6 @@ require.config({
         "bootbox": {
             "deps": ["bootstrap"],
             "exports": "bootbox"
-        },
-        
-        "tagsinput": {
-            "deps": ["jquery"]
         },
 
         "bootstrap-switch": {

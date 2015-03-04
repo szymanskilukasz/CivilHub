@@ -6,10 +6,8 @@
 
 require([window.STATIC_URL + "/js/config.js"], function () {
   require(['jquery',
-           'jqueryui',
-           'redactor',
-           'js/modules/common',
            'js/modules/editor/plugins/uploader',
+           'js/modules/common',
            'js/modules/locations/follow',
            'js/modules/inviter/userinviter',
            'js/modules/ideas/idea-form',
