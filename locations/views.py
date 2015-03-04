@@ -792,9 +792,11 @@ class LocationPollCreate(LoginRequiredMixin, CreateView):
         if form.is_valid():
             obj = form.save(commit=False)
             obj.creator = self.request.user
+            obj.image = request.FILES.get('image')
             obj.save()
             # Without this next line the tags won't be saved.
             form.save_m2m()
+            for f in request.FILES: print f
             for key, val in request.POST.iteritems():
                 if 'answer_txt_' in key:
                     a = Answer(poll=obj, answer=val)
