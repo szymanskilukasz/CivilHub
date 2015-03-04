@@ -9,6 +9,7 @@
 // -----------------------------------------------------------------------------
 
 require(['jquery',
+         'jqueryui',
          'redactor',
          'js/modules/ui/mapinput',
          'js/modules/content/content-form',
@@ -25,13 +26,9 @@ function ($) {
       defaultText: gettext("Add tag")
     });
 
-    /*$('#id_intro').redactor({
+    $('#id_intro').redactor({
       buttons: ['bold', 'italic', 'unorderedlist', 'orderedlist', 'link'],
       plugins: ['uploader']
-    });*/
-
-    $('#id_intro').redactor({
-      buttons: ['bold', 'italic', 'unorderedlist', 'orderedlist', 'link']
     });
 
     $('[type="checkbox"]').bootstrapSwitch({
