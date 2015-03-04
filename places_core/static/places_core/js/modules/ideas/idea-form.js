@@ -18,9 +18,13 @@ function ($) {
   
   $(document).ready(function () {
       
-    $('#id_description').redactor({
+    /*$('#id_description').redactor({
       buttons: ['bold', 'italic', 'unorderedlist', 'orderedlist', 'link'],
       plugins: ['uploader']
+    });*/
+
+    $('#id_intro').redactor({
+      buttons: ['bold', 'italic', 'unorderedlist', 'orderedlist', 'link']
     });
     
     $('#id_tags').tagsInput({

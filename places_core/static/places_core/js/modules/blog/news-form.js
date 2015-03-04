@@ -15,9 +15,13 @@ function ($) {
 
     var map = null;
 
-    $('#id_content').redactor({
+    /*$('#id_content').redactor({
       buttons: ['bold', 'italic', 'unorderedlist', 'orderedlist', 'link'],
       plugins: ['uploader']
+    });*/
+
+    $('#id_intro').redactor({
+      buttons: ['bold', 'italic', 'unorderedlist', 'orderedlist', 'link']
     });
 
     $('#id_tags').tagsInput({

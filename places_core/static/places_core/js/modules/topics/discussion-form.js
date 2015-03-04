@@ -25,9 +25,13 @@ function ($) {
       defaultText: gettext("Add tag")
     });
 
-    $('#id_intro').redactor({
+    /*$('#id_intro').redactor({
       buttons: ['bold', 'italic', 'unorderedlist', 'orderedlist', 'link'],
       plugins: ['uploader']
+    });*/
+
+    $('#id_intro').redactor({
+      buttons: ['bold', 'italic', 'unorderedlist', 'orderedlist', 'link']
     });
 
     $('[type="checkbox"]').bootstrapSwitch({
