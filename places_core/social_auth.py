@@ -135,14 +135,11 @@ def create_user_profile(strategy, details, response, user=None, *args, **kwargs)
 
 
 def get_username(strategy, details, user=None, *args, **kwargs):
-    """ Ustawiamy losową nazwę użytkownika, wg naszego schematu. """
+    """ Ustawiamy nazwę użytkownika wg naszego schematu. """
     storage = strategy.storage
     if user:
         final_username = storage.user.get_username(user)
     else:
-        import json
-        print json.dumps(details)
-        final_username = random_string(30)
-        while storage.user.user_exists(username=final_username):
-            final_username = random_string(30)
+        final_username = create_username(details.get('first_name'),
+                                         details.get('last_name'))
     return {'username': final_username}
