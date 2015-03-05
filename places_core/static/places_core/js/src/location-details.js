@@ -15,6 +15,8 @@ require([window.STATIC_URL + "/js/config.js"], function () {
 
   function($) {
 
+    "use strict";
+
     $(document).trigger('load');
       
   });
