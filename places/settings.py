@@ -79,6 +79,8 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     # http://django-modeltranslation.readthedocs.org/en/latest/
     'modeltranslation',
+    # https://django-debug-toolbar.readthedocs.org/en/
+    'debug_toolbar',
 
     # Core program modules
     'places_core', # for common templates and static files
@@ -128,6 +130,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'places.urls'
@@ -417,3 +420,6 @@ COMMENT_PAGINATOR_LIMIT = 10
 # Customowe ustawienia dla redisa, wyłącza cache w widokach dla
 # wersji developerskiej.
 USE_CACHE = False
+
+
+INTERNAL_IPS = "10.0.0.11"
