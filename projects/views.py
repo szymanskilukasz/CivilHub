@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.views.generic import ListView, DetailView
+from django.views.generic import View, ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render, redirect
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 
 from locations.mixins import LocationContextMixin
 from places_core.mixins import LoginRequiredMixin
@@ -11,6 +13,29 @@ from locations.models import Location
 
 from .models import SocialProject
 from .forms import CreateProjectForm, UpdateProjectForm
+
+
+class JoinProjectView(LoginRequiredMixin, LocationContextMixin, View):
+    """ Dołączanie/odłączanie użytkownika od całego projektu. """
+    template = 'projects/socialproject_join.html'
+
+    def post(self, request, location_slug=None, slug=None):
+        if not request.user.is_authenticated:
+            raise PermissionDenied
+        project = get_object_or_404(SocialProject, slug=slug)
+        if request.user.profile in project.participants.all():
+            project.participants.remove(request.user.profile)
+            message = _("You are no longer in this project")
+        else:
+            project.participants.add(request.user.profile)
+            message = _("You have joined to this project")
+        if request.is_ajax():
+            context = {'success': True, 'message': message,}
+            return HttpResponse(context, content_type="application/json")
+        return redirect(reverse('locations:project_details', kwargs={
+            'location_slug': location_slug,
+            'slug': project.slug
+        }))
 
 
 class ProjectListView(LocationContextMixin, ListView):

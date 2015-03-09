@@ -64,6 +64,7 @@ urlpatterns = patterns('',
     url(r'^(?P<slug>[\w-]+)/gallery/', LocationGalleryView.as_view(), name='gallery'),
     # Projekty w ramach lokalizacji
     url(r'^(?P<location_slug>[\w-]+)/projects/create/', project_views.CreateProjectView.as_view(), name='project_create'),
+    url(r'^(?P<location_slug>[\w-]+)/projects/(?P<slug>[\w-]+)/join/', project_views.JoinProjectView.as_view(), name='project_join'),
     url(r'^(?P<location_slug>[\w-]+)/projects/(?P<slug>[\w-]+)/update/', project_views.ProjectUpdateView.as_view(), name='project_update'),
     url(r'^(?P<location_slug>[\w-]+)/projects/(?P<slug>[\w-]+)/', project_views.ProjectDetailView.as_view(), name='project_details'),
     url(r'^(?P<location_slug>[\w-]+)/projects/', project_views.ProjectListView.as_view(), name='project_list'),

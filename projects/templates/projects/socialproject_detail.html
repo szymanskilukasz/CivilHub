@@ -1,16 +1,50 @@
 {% extends 'projects/index.html' %}{% load i18n %}
-{% block content %}<h1>
-  {{ object }}{% if is_moderator %}<a href="{% url 'locations:project_update' location.slug object.slug %}">{% trans "Edytuj" %}</a>{% endif %}
+{% block content %}
+<h1 class="task-page-heading">
+  {{ object }} {% if not object.is_done %}<small class="green">{% trans 'Active' %}</small>{% endif %}
+  {% if is_moderator or user.profile == object.creator %}<a href="{% url 'locations:project_update' location.slug object.slug %}">{% trans "Edytuj" %}</a>{% endif %}
 </h1>
-<div class="col-sm-9">
-  <ul>
-    {% for group in object.taskgroup_set.all %}<li>
-      {{ group }}{% if group.task_set.count %}<ul>
-        {% for task in group.task_set.all %}<li>{{ task }}</li>{% endfor %}
-      </ul>{% endif %}
-    </li>{% endfor %}
-  </ul>
-</div>
-<div class="col-sm-3">
-  <div class="description">{{ object.description|safe }}</div>
-</div>{% endblock %}
+<div id="task3-page" class="row">
+  <div class="col-sm-6">
+    <div class="left-side-task">
+      <h1>{% trans "Tasks" %}</h1>
+      {% for group in object.taskgroup_set.all %}<div class="task-container">
+        <div class="task-heading"><h4 class="task-title">{{ group }}</h4></div><a href="#"><span class="fa fa-plus-square add-task"></span></a>
+        {% for task in group.task_set.all %}<div class="task-content">
+          <div class="row">
+            <div class="col-sm-1">
+              <form>
+                <input type="checkbox" name="checkbox-task"></input>
+              </form>
+            </div>
+            <div class="col-sm-5">
+              <span class="sub-task-title">{{ task }}</span>
+            </div>
+            <div class="col-sm-5">
+              <div class="task-ppl">{% for participant in task.participants.all %}
+                <a href="{{ participant.get_absolute_url }}"><img src="{{ participant.avatar.url }}"></a>
+              {% endfor %}</div>
+            </div>
+            <div class="col-sm-1">
+              <div class="task-actions">
+                <a href="#"><span class="action-plus fa fa-plus"></span></a>
+                <a href="#"><span class="action-more fa fa-chevron-right"></span></a>
+              </div>
+            </div>
+          </div>
+        </div><!--./task-content -->{% endfor %}
+      </div><!--./task-container-->{% endfor %}
+      <div class="add-new-task-group">
+        <a href="#"><span class="fa fa-plus-square add-task"></span><p>{% trans "Add new group" %}</p></a>
+      </div>
+    </div>
+  </div><!-- ./col-sm-6 -->
+  <div class="col-sm-6">
+    <div class="right-side-task">
+      <div class="task-Container-right">
+        <div class="task-headline-right"></div>
+        <div class="text-block-right"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- ./ #task3-page -->{% endblock %}
