@@ -102,3 +102,10 @@ class Task(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('locations:task_details', kwargs={
+            'location_slug': self.group.project.location.slug,
+            'slug': self.group.project.slug,
+            'task_id': self.pk
+        })

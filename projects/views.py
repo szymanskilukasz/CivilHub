@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.http import HttpResponse
 from django.views.generic import View, ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.shortcuts import get_object_or_404, render, redirect
@@ -11,20 +12,20 @@ from places_core.mixins import LoginRequiredMixin
 from places_core.permissions import is_moderator
 from locations.models import Location
 
-from .models import SocialProject
+from .models import SocialProject, Task
 from .forms import CreateProjectForm, UpdateProjectForm
 
 
 class JoinProjectView(LoginRequiredMixin, LocationContextMixin, View):
     """ Dołączanie/odłączanie użytkownika od całego projektu. """
-    template = 'projects/socialproject_join.html'
-
     def post(self, request, location_slug=None, slug=None):
-        if not request.user.is_authenticated:
-            raise PermissionDenied
         project = get_object_or_404(SocialProject, slug=slug)
         if request.user.profile in project.participants.all():
             project.participants.remove(request.user.profile)
+            for group in project.taskgroup_set.all():
+                for task in group.task_set.all():
+                    if request.user.profile in task.participants.all():
+                        task.participants.remove(request.user.profile)
             message = _("You are no longer in this project")
         else:
             project.participants.add(request.user.profile)
@@ -35,6 +36,27 @@ class JoinProjectView(LoginRequiredMixin, LocationContextMixin, View):
         return redirect(reverse('locations:project_details', kwargs={
             'location_slug': location_slug,
             'slug': project.slug
+        }))
+
+
+class JoinTaskView(LoginRequiredMixin, LocationContextMixin, View):
+    """ Dołączanie/odłączanie użytkowników od konkretnego zadania. """
+    def post(self, request, location_slug=None, slug=None, task_id=None):
+        task = get_object_or_404(Task, pk=task_id)
+        if request.user.profile in task.participants.all():
+            task.participants.remove(request.user.profile)
+            message = _("You are no longer in this task")
+        else:
+            task.participants.add(request.user.profile)
+            if not request.user.profile in task.group.project.participants.all():
+                task.group.project.participants.add(request.user.profile)
+            message = _("You have joined this task")
+        if request.is_ajax():
+            context = {'success': True, 'message': message,}
+            return HttpResponse(context, content_type="application/json")
+        return redirect(reverse('locations:project_details', kwargs={
+            'location_slug': location_slug,
+            'slug': task.group.project.slug
         }))
 
 
@@ -93,3 +115,13 @@ class ProjectUpdateView(LoginRequiredMixin, LocationContextMixin, UpdateView):
 class ProjectDetailView(LocationContextMixin, DetailView):
     """ Strona podsumowania projektu. Tutaj sporo będzie się działo w JS. """
     model = SocialProject
+
+    def get_context_data(self, object=None):
+        context = super(ProjectDetailView, self).get_context_data()
+        task_id = self.kwargs.get('task_id')
+        if task_id is not None:
+            context['active_task'] = get_object_or_404(Task, pk=task_id)
+        else:
+            context['active_task'] = self.get_object()\
+                                    .taskgroup_set.first().task_set.first()
+        return context

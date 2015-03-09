@@ -18,7 +18,7 @@
               </form>
             </div>
             <div class="col-sm-5">
-              <span class="sub-task-title">{{ task }}</span>
+              <span class="sub-task-title{% if task.pk == active_task.pk %} active{% endif %}"><a href="{{ task.get_absolute_url }}">{{ task }}</a></span>
             </div>
             <div class="col-sm-5">
               <div class="task-ppl">{% for participant in task.participants.all %}
@@ -42,8 +42,23 @@
   <div class="col-sm-6">
     <div class="right-side-task">
       <div class="task-Container-right">
-        <div class="task-headline-right"></div>
-        <div class="text-block-right"></div>
+        <div class="task-headline-right">{% if active_task.date_limited %}{% trans "Planned completion" %}: {{ active_task.date_limited|date:'d.m.Y' }}{% endif %}</div>
+        <div class="text-block-right">
+          <h1>{{ active_task }}</h1>
+          <div>{{ active_task.description|safe }}</div>
+          <p class="created">{% trans "Created by" %}, <a href="{{ active_task.get_absolute_url }}">{{ active_task.creator }}</a> {{ active_task.date_created|date:'d.m.Y' }}</p>
+          <div class="footer-text-block-right">
+            <div class="project-participants">
+              <p>{% trans "Task participants" %}</p>{% for p in active_task.participants.all %}
+              <a href="{{ p.get_absolute_url }}" class="custom-tooltip" title="{{ p }}"><img src="{{ p.avatar.url }}"></a>{% endfor %}
+            </div>
+            <form action="{% url 'locations:task_join' location.slug object.slug active_task.pk %}" method="post">{% csrf_token %}
+              <div class="join-btn-task">
+              {% if user.profile in active_task.participants.all %}<button type="submit" class="submit-button">{% trans "Leave" %}</button></div>
+              {% else %}<button type="submit" class="submit-button">{% trans "Join" %}</button></div>{% endif %}
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>
