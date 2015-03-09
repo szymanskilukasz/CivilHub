@@ -1,0 +1,16 @@
+{% extends 'projects/index.html' %}{% load i18n %}
+{% block content %}<h1>
+  {{ object }}{% if is_moderator %}<a href="{% url 'locations:project_update' location.slug object.slug %}">{% trans "Edytuj" %}</a>{% endif %}
+</h1>
+<div class="col-sm-9">
+  <ul>
+    {% for group in object.taskgroup_set.all %}<li>
+      {{ group }}{% if group.task_set.count %}<ul>
+        {% for task in group.task_set.all %}<li>{{ task }}</li>{% endfor %}
+      </ul>{% endif %}
+    </li>{% endfor %}
+  </ul>
+</div>
+<div class="col-sm-3">
+  <div class="description">{{ object.description|safe }}</div>
+</div>{% endblock %}

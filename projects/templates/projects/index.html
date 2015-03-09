@@ -1,30 +1,20 @@
-{% extends 'places_core/base.html' %}
-{% load staticfiles i18n civil_tags cache %}
-
-{% cache 600 header location.slug %}
-
-{% block geometa %}{% if location.latitude and location.longitude %}
-<meta name="DC.title" content="{{ location }}" />
+{% extends 'places_core/base.html' %}{% load staticfiles i18n civil_tags %}
+{% block geometa %}{% if location.latitude and location.longitude %}<meta name="DC.title" content="{{ location }}" />
 <meta name="geo.region" content="{{ location.country_code }}" />
 <meta name="geo.placename" content="{{ location.name }}" />
 <meta name="geo.position" content="{{ location.latitude }};{{ location.longitude }}" />
-<meta name="ICBM" content="{{ location.latitude }}, {{ location.longitude }}" />
-{% endif %}{% endblock %}
+<meta name="ICBM" content="{{ location.latitude }}, {{ location.longitude }}" />{% endif %}{% endblock %}
+{% block require_scripts %}<script src="{% static 'places_core' %}/js/{% js_path %}/location-default.js"></script>{% endblock %}
 
-{% block require_scripts %}
-<script src="{% static 'places_core' %}/js/{% js_path %}/location-default.js"></script>
-{% endblock %}
-
-{% block header %}
-<style type="text/css">
+{% block header %}<style type="text/css">
 .location-logo {
-    background-image: url({{ location.background_url }});
+    background-image: url({{ object.background_url }});
 }
 @media 
 (-webkit-min-device-pixel-ratio: 2), 
 (min-resolution: 192dpi) {
     .location-logo {
-        background-image: url({{ location.retina_background_url }});
+        background-image: url({{ object.retina_background_url }});
     }
 }
 </style>
@@ -39,14 +29,9 @@
         <li class="breaker">
             <a href="#" class="sublocation-menu-toggle" data-target="{{ parent.pk }}" data-toggle="dropdown">&gt;</a></li>
         {% endfor %}
-        <li class="active">
-            <a href="{{ location.get_absolute_url }}">{{ location }}</a>
-        </li>
-        {% if location.location_set.count %}
-        <li class="last-element">
-            <a href="#" class="dropdown-toggle sublocation-menu-toggle" data-target="{{ location.pk }}" data-toggle="dropdown"></a>
-        </li>
-        {% endif %}
+        <li><a href="{{ location.get_absolute_url }}">{{ location }}</a></li>
+        <li class="breaker"><a href="#">&gt;</a></li>
+        <li class="active"><a href="{{ object.get_absolute_url }}">{{ object }}</a></li>
     </ul>
     
 </div>
@@ -55,21 +40,12 @@
 <div class="location-logo">
     <div class="container" style="height: 100%; position: relative;">
         <div class="title-container"> 
-            <div class="location-name-title" id="tour-location-name">{{ location }}</div>
-            <div class="followers sprite-icon"><span class="ch-icon ch-followers-white"></span>{{ location.users.all|length }}</div>
-            
-        {% if user in location.users.all %}
-            <button type="button" class="btn-unfollow-location" data-location-id="{{ location.pk }}">{% trans "You are following" %}</button>
-        {% else %}
-            <button type="button" class="btn-follow-location" data-location-id="{{ location.pk }}">{% trans "Follow" %}</button>
-        {% endif %}
-            
-        </div>
-        
-        {% if user.is_superuser or is_moderator %}
-            <a class="change-background-btn" href="{% url 'locations:background' location.pk %}">{% trans "Change background image" %}</a>
-        {% endif %}
-        
+            <div class="location-name-title" id="tour-location-name">{{ object }}</div>
+            <div class="followers sprite-icon"><span class="ch-icon ch-followers-white"></span>{{ object.participants.all|length }}</div>            
+            {% if user in location.users.all %}<button type="button" class="btn-unfollow-location" data-location-id="{{ location.pk }}">{% trans "You are following" %}</button>
+            {% else %}<button type="button" class="btn-follow-location" data-location-id="{{ location.pk }}">{% trans "Follow" %}</button>
+        {% endif %}</div>
+        {% if user.is_superuser or is_moderator %}<a class="change-background-btn" href="{% url 'locations:background' location.pk %}">{% trans "Change background image" %}</a>{% endif %}
     </div>
 </div>
 <nav id="location-navbar" class="navbar navbar-default" role="navigation">
@@ -91,9 +67,7 @@
                 <li><a href="{% url 'locations:polls' location.slug %}" id="tour-Polls">{% trans "Polls" %}</a></li>
                 <li><a href="{% url 'locations:project_list' location.slug %}">{% trans "Projects" %}</a></li>
                 <li><a href="#"> {% trans "Documents" %}</a>{% comment %}<span class="navbar-soon">(soon)</span>{% endcomment %}</li>
-                <!--<li><a href="#"><span class="ch-icon ch-polls"></span><span class="ch-icon ch-videos"></span>{% trans "Videos" %}</a></li>-->
                 <li><a href="{% url 'locations:gallery' location.slug %}" id="tour-Gallery">{% trans "Gallery" %}</a></li>
-                
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'locations:followers' location.slug %}" id="tour-Followers">{% trans "Followers" %}</a></li>
@@ -102,9 +76,4 @@
         </div>
     </div>
 </nav>
-
-<input type="hidden" id="current-location-pk" value="{{ location.pk }}" />
-
-{% endblock %}
-
-{% endcache %}
+<input type="hidden" id="current-location-pk" value="{{ location.pk }}" />{% endblock %}

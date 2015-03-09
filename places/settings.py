@@ -62,8 +62,6 @@ INSTALLED_APPS = (
     'djmail',
     # http://django-haystack.readthedocs.org/en/latest/
     'haystack',
-    # https://github.com/SmileyChris/easy-thumbnails
-    'easy_thumbnails',
     # http://django-mptt.github.io/django-mptt/
     'mptt',
     # http://www.django-rest-framework.org
@@ -99,6 +97,7 @@ INSTALLED_APPS = (
     'civmail',     # Newsletter i obsługa maili
     'articles',    # Statyczne artykuły - support etc.
     'bookmarks',   # Zakładki do treści dla użytkowników
+    'projects',    # Projekty i inicjatywy
 
     # django-activity-stream - powinien być ostatni na liście
     'actstream',
