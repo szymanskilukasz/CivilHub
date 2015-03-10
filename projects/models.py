@@ -32,6 +32,19 @@ class SocialProject(BackgroundModelMixin, models.Model):
     creator = models.ForeignKey(UserProfile, verbose_name=_(u"created by"), related_name="projects")
     image = models.ImageField(blank=True, upload_to=get_upload_path, default='img/projects/default.jpg')
 
+    @property
+    def progress(self):
+        """
+        Zwraca przybliżoną wartość procentową "zaawansowania" projektu. Sposób
+        obliczania jest bardzo prosty, wyliczamy średnią ukończonych zadań.
+        """
+        all_tasks = sum([group.task_set.count() for group in self.taskgroup_set.all()])
+        finished_tasks = sum([group.task_set.filter(is_done=True).count()\
+                              for group in self.taskgroup_set.all()])
+        if not finished_tasks:
+            return 0
+        return int(float(finished_tasks) / float(all_tasks) * 100)
+
     class Meta:
         verbose_name = _(u"project")
         verbose_name_plural = _(u"projects")

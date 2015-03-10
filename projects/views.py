@@ -304,7 +304,7 @@ class ProjectParticipantsView(LocationContextMixin, ListView):
 
 
 class ProjectDetailView(LocationContextMixin, DetailView):
-    """ Strona podsumowania projektu. Tutaj sporo będzie się działo w JS. """
+    """ Strona podsumowania zadań w ramach projektu. """
     model = SocialProject
 
     def get_context_data(self, object=None):

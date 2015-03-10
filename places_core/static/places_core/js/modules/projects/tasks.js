@@ -13,15 +13,14 @@ function ($, ui) {
   function toggleTask (e) {
     var $this = $(e.currentTarget);
     var $form = $this.parent('form');
-    $.post($form.attr('action'), {},
+    $.post($form.attr('action'), null,
       function (response) {
         ui.message.success(response.message);
       }
-    )
+    );
   }
 
   $(document).ready(function () {
-    $('.fake-submit').hide();
     $('[name="checkbox-task"]').on('click', toggleTask);
   }); 
 });
