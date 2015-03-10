@@ -77,6 +77,8 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     # http://django-modeltranslation.readthedocs.org/en/latest/
     'modeltranslation',
+    # https://github.com/bfirsh/django-ordered-model
+    'ordered_model',
     # https://django-debug-toolbar.readthedocs.org/en/
     'debug_toolbar',
 

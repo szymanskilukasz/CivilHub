@@ -8,6 +8,8 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
+from ordered_model.models import OrderedModel
+
 from locations.models import Location, BackgroundModelMixin
 from userspace.models import UserProfile
 
@@ -23,7 +25,7 @@ class SocialProject(BackgroundModelMixin, models.Model):
     slug = models.CharField(max_length=210, verbose_name=(u"slug"))
     description = models.TextField(blank=True, default='', verbose_name=_(u"description"))
     location = models.ForeignKey(Location, verbose_name=_(u"location"), related_name="projects")
-    participants = models.ManyToManyField(UserProfile, verbose_name=_(u"participants"))
+    participants = models.ManyToManyField(UserProfile, verbose_name=_(u"participants"), blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True, verbose_name=_(u"date created"))
     date_changed = models.DateTimeField(auto_now=True, verbose_name=_(u"date changed"))
     is_done = models.BooleanField(default=False, verbose_name=_(u"finished"))
@@ -68,14 +70,17 @@ class SocialProject(BackgroundModelMixin, models.Model):
 
 
 @python_2_unicode_compatible
-class TaskGroup(models.Model):
+class TaskGroup(OrderedModel):
     """ """
     name = models.CharField(max_length=200, verbose_name=_(u"name"))
     description = models.TextField(blank=True, default='', verbose_name=_(u"description"))
     project = models.ForeignKey(SocialProject, verbose_name=_(u"project"))
     creator = models.ForeignKey(UserProfile, verbose_name=_(u"created by"), related_name="task_groups")
 
+    order_with_respect_to = 'project'
+
     class Meta:
+        ordering = ['order',]
         verbose_name = _(u"task group")
         verbose_name_plural = _(u"task groups")
 
@@ -84,7 +89,7 @@ class TaskGroup(models.Model):
 
 
 @python_2_unicode_compatible
-class Task(models.Model):
+class Task(OrderedModel):
     """ """
     name = models.CharField(max_length=200, verbose_name=_(u"name"))
     description = models.TextField(blank=True, default='', verbose_name=_(u"description"))
@@ -92,11 +97,14 @@ class Task(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, verbose_name=_(u"date created"))
     date_changed = models.DateTimeField(auto_now=True, verbose_name=_(u"date changed"))
     date_limited = models.DateTimeField(blank=True, null=True, verbose_name=_(u"time limit"))
-    participants = models.ManyToManyField(UserProfile, verbose_name=_(u"participants"))
+    participants = models.ManyToManyField(UserProfile, verbose_name=_(u"participants"), blank=True, null=True)
     is_done = models.BooleanField(default=False, verbose_name=_(u"finished"))
     creator = models.ForeignKey(UserProfile, verbose_name=_(u"created by"), related_name="tasks")
 
+    order_with_respect_to = 'group'
+
     class Meta:
+        ordering = ['order',]
         verbose_name = _(u"task")
         verbose_name_plural = _(u"tasks")
 

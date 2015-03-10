@@ -1,5 +1,5 @@
 {% extends 'places_core/base.html' %}{% load staticfiles i18n civil_tags %}
-{% block require_scripts %}<script src="{% static 'places_core' %}/js/{% js_path %}/location-default.js"></script>{% endblock %}
+{% block require_scripts %}<script src="{% static 'places_core' %}/js/{% js_path %}/projects-default.js"></script>{% endblock %}
 
 {% block header %}<style type="text/css">
 .location-logo {
@@ -37,7 +37,7 @@
     <div class="container">
         <div class="title-container">
             <div class="project-name"><h1>{{ object }}</h1></div>
-            <div class="project-content"><p>{{ object.description|safe }}</p></div>
+            <div class="project-content">{{ object.description|safe }}</div>
             {% if user.is_authenticated %}<form method="post" action="{% url 'locations:project_join' location.slug object.slug %}">{% csrf_token %} 
               {% if user.profile in object.participants.all %}<div class="join-project-btn">
                 <button type="submit" class="submit-button">{% trans "Leave the Project" %}</button>
@@ -67,18 +67,9 @@
           </div>
         <div class="collapse navbar-collapse" id="bs-location-collapse-menu">
             <ul class="nav navbar-nav">
-                <li><a href="{{ location.get_absolute_url }}" id="tour-Summary">{% trans "Summary" %}</a></li>
-                <li><a href="{% url 'locations:news' location.slug %}" id="tour-Blog"></span>{% trans "Blog" %}</a></li>
-                <li><a href="{% url 'locations:discussions' location.slug %}" id="tour-Discussions">{% trans "Discussions" %}</a></li>
-                <li><a href="{% url 'locations:ideas' location.slug %}" id="tour-Ideas">{% trans "Ideas" %}</a></li>
-                <li><a href="{% url 'locations:polls' location.slug %}" id="tour-Polls">{% trans "Polls" %}</a></li>
-                <li><a href="{% url 'locations:project_list' location.slug %}">{% trans "Projects" %}</a></li>
-                <li><a href="#"> {% trans "Documents" %}</a>{% comment %}<span class="navbar-soon">(soon)</span>{% endcomment %}</li>
-                <li><a href="{% url 'locations:gallery' location.slug %}" id="tour-Gallery">{% trans "Gallery" %}</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'locations:followers' location.slug %}" id="tour-Followers">{% trans "Followers" %}</a></li>
-                <li><a href="{% url 'locations:sublocations' location.slug %}" id="tour-Subspaces">{% trans "Subspaces" %}</a></li>
+                <li><a href="{% url 'locations:project_summary' location.slug object.slug %}">{% trans "Summary" %}</a></li>
+                <li><a href="{{ object.get_absolute_url }}"></span>{% trans "Tasks" %}</a></li>
+                <li><a href="{% url 'locations:project_participants' location.slug object.slug %}">{% trans "Participants" %}</a></li>
             </ul>
         </div>
     </div>
