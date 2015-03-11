@@ -39,9 +39,12 @@ def set_element_order(request, content_type, object_id, direction):
     else:
         obj.down()
     if hasattr(obj, 'get_absolute_url'):
+        # Zadanie
         redirect_url = obj.get_absolute_url()
     else:
+        # Grupa zadań
         redirect_url = obj.project.get_absolute_url()
+    print ProjectAccessMixin().check_access(obj, request.user)
     return redirect(redirect_url)
 
 
@@ -94,16 +97,19 @@ class ProjectAccessMixin(LoginRequiredMixin, ProjectContextMixin):
         # "Twórca" zawsze może usunąć swoje "dzieło"
         access = user.profile == obj.creator
         # Superadmin może wszystko
-        if not access and request.user.is_superuser:
+        if not access and user.is_superuser:
             access = True
         # Sprawdzamy prawa moderatora
         if not access:
             location = None
             if hasattr(obj, 'location'):
+                # Projekt
                 location = obj.location
             elif hasattr(obj, 'project'):
+                # Grupa zadań
                 location = obj.project.location
             else:
+                # Zadanie
                 location = obj.group.project.location
             if is_moderator(request.user, location):
                 access = True
@@ -265,10 +271,8 @@ class CreateProjectView(LoginRequiredMixin, LocationContextMixin, CreateView):
         initial = super(CreateProjectView, self).get_initial()
         location_slug = self.kwargs.get('location_slug')
         if location_slug is not None:
-            initial.update({
-                'location': get_object_or_404(Location, slug=location_slug)
-            })
-        initial.update({'creator': self.request.user.pk})
+            initial['location'] = get_object_or_404(Location, slug=location_slug)
+        initial['creator'] = self.request.user.pk
         return initial
 
 

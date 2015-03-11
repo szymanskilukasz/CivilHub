@@ -11,7 +11,7 @@
       {% for group in object.taskgroup_set.all %}<div class="task-container">
         <div class="task-heading">
           <h4 class="task-title"><a href="{% url 'locations:project_update_group' location.slug object.slug group.pk %}">{{ group }}</a></h4>
-          <div class="custom-controls">
+          <div class="custom-controls">{% if user.is_authenticated %}
             <a href="{% url 'locations:project_create_task' location.slug object.slug group.pk %}"><span class="fa fa-plus-square add-task"></span></a>
             <form class="custom-inline-form" action="{% url 'locations:project_delete_group' location.slug object.slug group.pk %}" method="post">{% csrf_token %}
               <button type="submit" class="fa fa-minus-square add-task">&nbsp;</button>
@@ -22,14 +22,15 @@
             <form class="custom-inline-form" action="{% url 'projects:change_order' ctype.pk group.pk 'DOWN' %}" method="post">{% csrf_token %}
               <button type="submit" class="fa fa-minus-square">&nbsp;</button>
             </form>{% endwith %}
-          </div>
+          {% endif %}</div>
         </div>
         {% for task in group.task_set.all %}<div class="task-content">
           <div class="row">
             <div class="col-sm-1">
-              <form class="custom-inline-form" action="{% url 'projects:toggle_task' task.pk %}" method="post">{% csrf_token %}
+              {% if user.is_authenticated %}<form class="custom-inline-form" action="{% url 'projects:toggle_task' task.pk %}" method="post">{% csrf_token %}
                 <input type="checkbox"{% if task.is_done %} checked="checked"{% endif %} name="checkbox-task"></input>
-              </form>
+              </form>{% elif task.is_done %}<p class="label label-success label-sm"><span class="fa fa-check">&nbsp;</span></p>
+              {% else %}<p class="label label-danger label-sm"><span class="fa fa-close">&nbsp;</span></p>{% endif %}
             </div>
             <div class="col-sm-5">
               <span class="sub-task-title{% if task.pk == active_task.pk %} active{% endif %}"><a href="{{ task.get_absolute_url }}">{{ task }}</a></span>
@@ -40,7 +41,7 @@
               {% endfor %}</div>
             </div>
             <div class="col-sm-1">
-              <div class="custom-controls">
+              <div class="custom-controls">{% if user.is_authenticated %}
                 <form class="custom-inline-form" action="{% url 'locations:task_join' location.slug object.slug task.pk %}" method="post">{% csrf_token %}
                   <button type="submit" class="action-plus fa fa-plus">&nbsp;</button>
                 </form>
@@ -54,7 +55,7 @@
                 <form class="custom-inline-form" action="{% url 'projects:change_order' ctype.pk task.pk 'DOWN' %}" method="post">{% csrf_token %}
                   <button type="submit" class="action-plus fa fa-minus-square">&nbsp;</button>
                 </form>{% endwith %}
-              </div>
+              {% endif %}</div>
             </div>
           </div>
         </div><!--./task-content -->{% endfor %}
