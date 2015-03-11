@@ -1,7 +1,7 @@
 //
 // projects-default.js
 // ===================
-// 
+
 // Skrypty obsługujące strony i formularze powiązane z projektami.
 
 require([window.STATIC_URL + "/js/config.js"], function () {

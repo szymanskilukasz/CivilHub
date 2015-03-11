@@ -13,7 +13,7 @@ class CreateProjectForm(forms.ModelForm, BootstrapBaseForm):
         fields = ('name', 'description', 'creator', 'location',)
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control custom-wysiwyg-no-gallery'}),
             'creator': forms.HiddenInput(),
             'location': forms.HiddenInput(),
         }
@@ -26,7 +26,8 @@ class UpdateProjectForm(forms.ModelForm, BootstrapBaseForm):
         fields = ('name', 'description', 'is_done',)
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control custom-wysiwyg-no-gallery'}),
+            'is_done': forms.CheckboxInput(attrs={'class': 'custom-bs-switch'}),
         }
 
 
@@ -37,7 +38,7 @@ class TaskGroupForm(forms.ModelForm, BootstrapBaseForm):
         fields = ('name', 'description', 'project', 'creator',)
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control custom-wysiwyg-no-gallery'}),
             'creator': forms.HiddenInput(),
             'project': forms.HiddenInput(),
         }
@@ -50,7 +51,8 @@ class TaskForm(forms.ModelForm, BootstrapBaseForm):
         exclude = ('participants', 'is_done',)
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control custom-wysiwyg-no-gallery'}),
+            'date_limited': forms.TextInput(attrs={'class': 'form-control custom-datepicker'}),
             'creator': forms.HiddenInput(),
             'group': forms.HiddenInput(),
         }

@@ -2,6 +2,8 @@
 from __future__ import absolute_import
 
 import sys
+reload(sys);
+sys.setdefaultencoding("utf8")
 import os
 
 import djcelery

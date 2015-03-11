@@ -4,17 +4,20 @@ from __future__ import unicode_literals
 from slugify import slugify
 
 from django.db import models
+from django.utils.html import strip_tags
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
 from ordered_model.models import OrderedModel
 
+from places_core.helpers import sanitizeHtml
 from locations.models import Location, BackgroundModelMixin
 from userspace.models import UserProfile
 
 
 def get_upload_path(instance, filename):
+    """ Ustawia ścieżkę i losową nazwę dla obrazu. """
     return 'img/projects/' + uuid4().hex + os.path.splitext(filename)[1]
 
 
@@ -32,6 +35,10 @@ class SocialProject(BackgroundModelMixin, models.Model):
     creator = models.ForeignKey(UserProfile, verbose_name=_(u"created by"), related_name="projects")
     image = models.ImageField(blank=True, upload_to=get_upload_path, default='img/projects/default.jpg')
 
+    class Meta:
+        verbose_name = _(u"project")
+        verbose_name_plural = _(u"projects")
+
     @property
     def progress(self):
         """
@@ -45,13 +52,6 @@ class SocialProject(BackgroundModelMixin, models.Model):
             return 0
         return int(float(finished_tasks) / float(all_tasks) * 100)
 
-    class Meta:
-        verbose_name = _(u"project")
-        verbose_name_plural = _(u"projects")
-
-    def __str__(self):
-        return self.name
-
     def get_absolute_url(self):
         return reverse('locations:project_details', kwargs={
             'location_slug': self.location.slug,
@@ -60,8 +60,11 @@ class SocialProject(BackgroundModelMixin, models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Provides 'clean' slug for this object, adding number of such elements to base name.
+        Provides 'clean' slug for this object, adding number of such elements
+        to base name. Additionaly, we sanitize input from user.
         """
+        self.name = strip_tags(self.name)
+        self.description = sanitizeHtml(self.description)
         slug = slugify(self.name)
         if not self.slug:
             self.slug = slug
@@ -81,6 +84,9 @@ class SocialProject(BackgroundModelMixin, models.Model):
                 self.slug = "{}-{}".format(slug, retries)
         super(SocialProject, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return self.name
+
 
 @python_2_unicode_compatible
 class TaskGroup(OrderedModel):
@@ -96,6 +102,11 @@ class TaskGroup(OrderedModel):
         ordering = ['order',]
         verbose_name = _(u"task group")
         verbose_name_plural = _(u"task groups")
+
+    def save(self, *args, **kwargs):
+        self.name = strip_tags(self.name)
+        self.description = sanitizeHtml(self.description)
+        super(TaskGroup, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -121,8 +132,10 @@ class Task(OrderedModel):
         verbose_name = _(u"task")
         verbose_name_plural = _(u"tasks")
 
-    def __str__(self):
-        return self.name
+    def save(self, *args, **kwargs):
+        self.name = strip_tags(self.name)
+        self.description = sanitizeHtml(self.description)
+        super(Task, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse('locations:task_details', kwargs={
@@ -130,3 +143,6 @@ class Task(OrderedModel):
             'slug': self.group.project.slug,
             'task_id': self.pk
         })
+
+    def __str__(self):
+        return self.name

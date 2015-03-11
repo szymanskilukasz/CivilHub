@@ -21,8 +21,8 @@ from locations.mixins import LocationContextMixin
 from locations.models import Location
 from userspace.models import UserProfile
 from places_core.mixins import LoginRequiredMixin
-from places_core.permissions import is_moderator
 
+from .permissions import check_access
 from .models import SocialProject, TaskGroup, Task
 from .forms import CreateProjectForm, UpdateProjectForm, TaskGroupForm, TaskForm
 
@@ -44,7 +44,7 @@ def set_element_order(request, content_type, object_id, direction):
     else:
         # Grupa zadań
         redirect_url = obj.project.get_absolute_url()
-    print ProjectAccessMixin().check_access(obj, request.user)
+    print check_access(obj, request.user)
     return redirect(redirect_url)
 
 
@@ -80,6 +80,7 @@ class ProjectContextMixin(LocationContextMixin):
         context['form'] = form
         if project_slug is not None:
             context['object'] = get_object_or_404(SocialProject, slug=project_slug)
+            context['project_access'] = check_access(context['object'], self.request.user)
         if location_slug is not None:
             context['location'] = get_object_or_404(Location, slug=location_slug)
         return context
@@ -87,45 +88,16 @@ class ProjectContextMixin(LocationContextMixin):
 
 class ProjectAccessMixin(LoginRequiredMixin, ProjectContextMixin):
     """
-    Mixin dla widoków usuwania i edycji prjektów, zadań oraz grup zadań. Superużytkownik
-    zawsze ma prawa dostępu do wszystkiego. Każdy może tworzyć nowe zadania i grupy,
-    ale tylko twórcy, administratorzy oraz moderatorzy mogą je później edytować
-    i usuwać. Oczywiście, niezalogowani userzy nie mogą nic.
+    Sprawdzamy, czy użytkownik ma odpowiednie prawa dostępu.
     """
-    @classmethod
-    def check_access(cls, obj, user):
-        # "Twórca" zawsze może usunąć swoje "dzieło"
-        access = user.profile == obj.creator
-        # Superadmin może wszystko
-        if not access and user.is_superuser:
-            access = True
-        # Sprawdzamy prawa moderatora
-        if not access:
-            location = None
-            if hasattr(obj, 'location'):
-                # Projekt
-                location = obj.location
-            elif hasattr(obj, 'project'):
-                # Grupa zadań
-                location = obj.project.location
-            else:
-                # Zadanie
-                location = obj.group.project.location
-            if is_moderator(request.user, location):
-                access = True
-        return access
-
     def get(self, request, location_slug=None, slug=None, group_id=None, task_id=None):
-        obj = self.get_object()
-        access = self.check_access(obj, request.user)
-        if not access:
+        # TODO: można pokazać coś bardziej odpowiedniego niż 403.
+        if not check_access(self.get_object(), request.user):
             raise PermissionDenied
         return super(ProjectAccessMixin, self).get(request)
 
     def post(self, request, slug=None, location_slug=None, group_id=None, task_id=None):
-        obj = self.get_object()
-        access = self.check_access(obj, request.user)
-        if not access:
+        if not check_access(self.get_object(), request.user):
             raise PermissionDenied
         return super(ProjectAccessMixin, self).post(request)
 
@@ -229,6 +201,12 @@ class CreateTaskView(ProjectContextMixin, CreateView):
             initial['group'] = get_object_or_404(TaskGroup, pk=group_id)
         return initial
 
+    def form_valid(self, form):
+        obj = form.save()
+        obj.participants.add(obj.creator)
+        obj.save()
+        return super(CreateTaskView, self).form_valid(form)
+
 
 class UpdateTaskView(ProjectAccessMixin, UpdateView):
     """ Edycja istniejących zadań. """
@@ -274,6 +252,12 @@ class CreateProjectView(LoginRequiredMixin, LocationContextMixin, CreateView):
             initial['location'] = get_object_or_404(Location, slug=location_slug)
         initial['creator'] = self.request.user.pk
         return initial
+
+    def form_valid(self, form):
+        obj = form.save()
+        obj.participants.add(obj.creator)
+        obj.save()
+        return super(CreateProjectView, self).form_valid(form)
 
 
 class ProjectUpdateView(ProjectAccessMixin, UpdateView):
