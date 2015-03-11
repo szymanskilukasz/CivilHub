@@ -32,3 +32,5 @@ django-simple-captcha==0.4.4
 django-activity-stream==0.5.1
 django-modeltranslation==0.8
 psycopg2==2.6
+django-ordered-model==0.4.0
+django-debug-toolbar==1.2.2
