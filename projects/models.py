@@ -15,6 +15,8 @@ from places_core.helpers import sanitizeHtml
 from locations.models import Location, BackgroundModelMixin
 from userspace.models import UserProfile
 
+from .signals import project_created_action, project_task_action
+
 
 def get_upload_path(instance, filename):
     """ Ustawia ścieżkę i losową nazwę dla obrazu. """
@@ -146,3 +148,8 @@ class Task(OrderedModel):
 
     def __str__(self):
         return self.name
+
+
+models.signals.post_save.connect(project_created_action, sender=SocialProject)
+models.signals.post_save.connect(project_task_action, sender=TaskGroup)
+models.signals.post_save.connect(project_task_action, sender=Task)

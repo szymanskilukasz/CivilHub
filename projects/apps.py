@@ -6,3 +6,5 @@ class ProjectStreamConfig(AppConfig):
 
     def ready(self):
         registry.register(self.get_model('SocialProject'))
+        registry.register(self.get_model('TaskGroup'))
+        registry.register(self.get_model('Task'))

@@ -17,11 +17,14 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.views import login_required
 from django.contrib.contenttypes.models import ContentType
 
+from actstream.models import Action
+
 from locations.mixins import LocationContextMixin
 from locations.models import Location
 from userspace.models import UserProfile
 from places_core.mixins import LoginRequiredMixin
 
+import actions as project_actions
 from .permissions import check_access
 from .models import SocialProject, TaskGroup, Task
 from .forms import CreateProjectForm, UpdateProjectForm, TaskGroupForm, TaskForm
@@ -60,6 +63,7 @@ def toggle_task_state(request, pk):
         task.is_done = True
         message = _(u"Task marked as finished")
     task.save()
+    project_actions.finished_task(request.user, task)
     if request.is_ajax():
         context = json.dumps({
             'success': True,
@@ -116,6 +120,7 @@ class JoinProjectView(LoginRequiredMixin, LocationContextMixin, View):
         else:
             project.participants.add(request.user.profile)
             message = _("You have joined to this project")
+            project_actions.joined_to_project(request.user, project)
         if request.is_ajax():
             context = {'success': True, 'message': message,}
             return HttpResponse(context, content_type="application/json")
@@ -136,6 +141,9 @@ class JoinTaskView(LoginRequiredMixin, LocationContextMixin, View):
             task.participants.add(request.user.profile)
             if not request.user.profile in task.group.project.participants.all():
                 task.group.project.participants.add(request.user.profile)
+                project_actions.joined_to_project(request.user, task.group.project)
+            else:
+                project_actions.joined_to_task(request.user, task)
             message = _("You have joined this task")
         if request.is_ajax():
             context = {'success': True, 'message': message,}
@@ -271,6 +279,14 @@ class ProjectSummaryView(LocationContextMixin, DetailView):
     """ Podsumowanie najważniejszych informacji o projekcie. """
     model = SocialProject
     template_name = 'projects/socialproject_summary.html'
+
+    def get_context_data(self, object=None):
+        context = super(ProjectSummaryView, self).get_context_data()
+        ct = ContentType.objects.get_for_model(self.model).pk
+        context['actions'] = Action.objects.filter(target_content_type_id=ct)\
+                               .filter(target_object_id=self.get_object().pk)\
+                               .order_by('-timestamp')
+        return context
 
 
 class ProjectParticipantsView(LocationContextMixin, ListView):
