@@ -18,6 +18,7 @@ from django.contrib.auth.views import login_required
 from django.contrib.contenttypes.models import ContentType
 
 from actstream.models import Action
+from actstream.actions import follow, unfollow
 
 from locations.mixins import LocationContextMixin
 from locations.models import Location
@@ -117,10 +118,13 @@ class JoinProjectView(LoginRequiredMixin, LocationContextMixin, View):
                     if request.user.profile in task.participants.all():
                         task.participants.remove(request.user.profile)
             message = _("You are no longer in this project")
+            project_actions.leaved_project(request.user, project)
+            unfollow(request.user, project)
         else:
             project.participants.add(request.user.profile)
             message = _("You have joined to this project")
             project_actions.joined_to_project(request.user, project)
+            follow(request.user, project, actor_only=False)
         if request.is_ajax():
             context = {'success': True, 'message': message,}
             return HttpResponse(context, content_type="application/json")
@@ -142,6 +146,7 @@ class JoinTaskView(LoginRequiredMixin, LocationContextMixin, View):
             if not request.user.profile in task.group.project.participants.all():
                 task.group.project.participants.add(request.user.profile)
                 project_actions.joined_to_project(request.user, task.group.project)
+                follow(request.user, task.group.project, actor_only=False)
             else:
                 project_actions.joined_to_task(request.user, task)
             message = _("You have joined this task")
@@ -213,6 +218,7 @@ class CreateTaskView(ProjectContextMixin, CreateView):
         obj = form.save()
         obj.participants.add(obj.creator)
         obj.save()
+        follow(obj.creator.user, obj.group.project, actor_only=False)
         return super(CreateTaskView, self).form_valid(form)
 
 
@@ -265,6 +271,7 @@ class CreateProjectView(LoginRequiredMixin, LocationContextMixin, CreateView):
         obj = form.save()
         obj.participants.add(obj.creator)
         obj.save()
+        follow(obj.creator.user, obj, actor_only=False)
         return super(CreateProjectView, self).form_valid(form)
 
 
