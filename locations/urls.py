@@ -1,26 +1,27 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, include, url
 from ideas.views import IdeasDetailView
-from blog.views import NewsDetailView, NewsListView
+from blog.views import NewsDetailView, NewsListView, NewsCreateView, NewsUpdateView
 from topics.views import DiscussionDetailView
 from polls.views import PollDetails, PollResults
 from gallery.views import LocationGalleryView, PlacePictureView, \
                            LocationGalleryCreateView, location_gallery_delete, \
                            LocationGalleryUpdateView
 from projects import views as project_views
+import api
 from locations.views import *
 from staticpages.views import PageView
 
 from rest.routers import HybridRouter
 router = HybridRouter()
-router.register('locations', LocationAPIViewSet, 'locations')
-router.register('markers', LocationMapViewSet, 'markers')
-router.register('actions', LocationActionsRestViewSet, 'actions')
-router.register('sublocations', SublocationAPIViewSet, 'sublocations')
-router.register('countries', CountryAPIViewSet, 'countries')
-router.add_api_view('follow', url(r'^follow/', LocationFollowAPIView.as_view(), name='follow'))
-router.add_api_view('contents', url(r'^contents/', LocationSummaryAPI.as_view(), name='contents'))
-router.add_api_view('capital', url(r'^capital/', CapitalAPI.as_view(), name='capital'))
+router.register('locations', api.LocationAPIViewSet, 'locations')
+router.register('markers', api.LocationMapViewSet, 'markers')
+router.register('actions', api.LocationActionsRestViewSet, 'actions')
+router.register('sublocations', api.SublocationAPIViewSet, 'sublocations')
+router.register('countries', api.CountryAPIViewSet, 'countries')
+router.add_api_view('follow', url(r'^follow/', api.LocationFollowAPIView.as_view(), name='follow'))
+router.add_api_view('contents', url(r'^contents/', api.LocationSummaryAPI.as_view(), name='contents'))
+router.add_api_view('capital', url(r'^capital/', api.CapitalAPI.as_view(), name='capital'))
 
 urlpatterns = patterns('',
     url(r'^create/', CreateLocationView.as_view(), name='create'),
@@ -37,12 +38,14 @@ urlpatterns = patterns('',
     url(r'^(?P<slug>[\w-]+)/ideas/create', LocationIdeaCreate.as_view(), name='new_idea'),
     url(r'^(?P<place_slug>[\w-]+)/ideas/(?P<slug>[\w-]+)', IdeasDetailView.as_view(), name='idea_detail'),
     url(r'^(?P<slug>[\w-]+)/ideas', LocationIdeasList.as_view(), name='ideas'),
-    # Location news entries sub-views
-    url(r'^(?P<slug>[\w-]+)/news/create', LocationNewsCreate.as_view(), name='news_create'),
-    url(r'^(?P<place_slug>[\w-]+)/news/(?P<slug>[\w-]+)', NewsDetailView.as_view(), name='news_detail'),
-    #url(r'^(?P<slug>[\w-]+)/news/', LocationNewsList.as_view(), name='news'),
+    
+    # BLOG
+    url(r'^(?P<location_slug>[\w-]+)/news/create', NewsCreateView.as_view(), name='news_create'),
+    url(r'^(?P<location_slug>[\w-]+)/news/(?P<slug>[\w-]+)/update/', NewsUpdateView.as_view(), name='news_update'),
+    url(r'^(?P<location_slug>[\w-]+)/news/(?P<slug>[\w-]+)', NewsDetailView.as_view(), name='news_detail'),
     url(r'^(?P<location_slug>[\w-]+)/news/', NewsListView.as_view(), name='news'),
-    # Location forum (discussions)
+
+    # FORUM (dyskusje)
     url(r'^(?P<slug>[\w-]+)/discussion/create/', LocationDiscussionCreate.as_view(), name='new_topic'),
     url(r'^(?P<place_slug>[\w-]+)/discussion/(?P<slug>[\w-]+)/', DiscussionDetailView.as_view(), name='topic'),
     url(r'^(?P<slug>[\w-]+)/discussion/', LocationDiscussionsList.as_view(), name='discussions'),

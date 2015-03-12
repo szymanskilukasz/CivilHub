@@ -93,7 +93,7 @@ class News(ImagableItemMixin):
     
     def get_absolute_url(self):
         return reverse('locations:news_detail', kwargs={
-            'place_slug': self.location.slug,
+            'location_slug': self.location.slug,
             'slug':self.slug,
         })
 

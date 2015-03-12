@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.utils.translation import ugettext as _
 from django.views.generic import DetailView
@@ -9,12 +10,23 @@ from django.contrib.contenttypes.models import ContentType
 from maps.forms import AjaxPointerForm
 from maps.models import MapPointer
 from locations.links import LINKS_MAP as links
+from locations.models import Location
 from locations.mixins import ContentMixin, LocationContextMixin
 from places_core.mixins import LoginRequiredMixin
 from places_core.permissions import is_moderator
 
 from .models import Category, News
 from .forms import NewsForm
+
+
+class BlogContextMixin(LocationContextMixin):
+    """ """
+    def get_context_data(self, form=None, object=None):
+        context = super(BlogContextMixin, self).get_context_data()
+        context['links'] = links['news']
+        if form is not None:
+            context['form'] = form
+        return context
 
 
 class CategoryListView(ListView):
@@ -33,7 +45,7 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
     fields = ['name', 'description']
 
 
-class NewsListView(LocationContextMixin, ListView):
+class NewsListView(BlogContextMixin, ListView):
     """ Lista projektów w ramach jednej lokalizacji. """
     model = News
     paginate_by = 10
@@ -45,7 +57,7 @@ class NewsListView(LocationContextMixin, ListView):
         return self.model.objects.filter(location__slug=location_slug)
 
     
-class NewsDetailView(DetailView):
+class NewsDetailView(BlogContextMixin, DetailView):
     """ Detailed news page. """
     model = News
 
@@ -68,32 +80,42 @@ class NewsDetailView(DetailView):
         context['links'] = links['news']
         return context
 
-    
-class NewsCreateView(LoginRequiredMixin, CreateView):
-    """ Create new entry. """
+
+class NewsCreateView(LoginRequiredMixin, BlogContextMixin, CreateView):
     model = News
     form_class = NewsForm
 
+    def get_initial(self):
+        initial = super(NewsCreateView, self).get_initial()
+        location_slug = self.kwargs.get('location_slug')
+        if location_slug is not None:
+            initial['location'] = get_object_or_404(Location, slug=location_slug)
+        return initial
+
     def form_valid(self, form):
-        form.instance.creator = self.request.user
+        obj = form.save(commit=False)
+        obj.creator = self.request.user
+        obj.save()
+        form.save_m2m()
+        try:
+            for m in json.loads(self.request.POST.get('markers')):
+                marker = MapPointer.objects.create(
+                    content_type=ContentType.objects.get_for_model(News),
+                    object_pk=obj.pk, latitude=m['lat'], longitude=m['lng'])
+        except Exception:
+            # FIXME: silent fail, powinna być flash message
+            pass
         return super(NewsCreateView, self).form_valid(form)
 
 
-class NewsUpdateView(LoginRequiredMixin, UpdateView):
+class NewsUpdateView(LoginRequiredMixin, BlogContextMixin, UpdateView):
     """ Let owner edit his newses. """
     model = News
     form_class = NewsForm
-    template_name = 'locations/location_news_form.html'
 
     def get_context_data(self, **kwargs):
-        obj = super(NewsUpdateView, self).get_object()
-        moderator = is_moderator(self.request.user, obj.location)
-        if obj.creator != self.request.user and not moderator:
-            raise PermissionDenied
         context = super(NewsUpdateView, self).get_context_data(**kwargs)
-        context['is_moderator'] = moderator
-        context['title'] = obj.title
+        context['title'] = self.get_object().title
         context['subtitle'] = _('Edit entry')
-        context['location'] = obj.location
-        context['links'] = links['news']
+        context['location'] = self.get_object().location
         return context
