@@ -65,7 +65,7 @@ class LocationSummaryAPI(APIView):
         `category` - ID kategorii do przeszukania (jeżeli dotyczy)<br>
         `per_page` - Ilość elementów do pokazania na jednej stronie (max 100)<br>
     """
-    paginate_by = 50
+    paginate_by = 24
     permission_classes = (rest_permissions.AllowAny,)
 
     def get(self, request):
@@ -270,7 +270,7 @@ class LocationActionsRestViewSet(viewsets.ViewSet):
         queryset = self.get_queryset(pk, ct)
         
         page = request.QUERY_PARAMS.get('page')
-        paginator = Paginator(queryset, settings.STREAM_PAGINATOR_LIMIT)
+        paginator = Paginator(queryset, 12)
         try:
             actions = paginator.page(page)
         except PageNotAnInteger:

@@ -102,7 +102,7 @@ class LocationIdeasList(DetailView):
         context['links'] = links['ideas']
         context['appname'] = 'idea-list'
         context['categories'] = IdeaCategory.objects.all()
-        context['tags'] = TagFilter(self.object).get_items()
+        #context['tags'] = TagFilter(self.object).get_items()
         return context
 
 
@@ -474,24 +474,22 @@ def get_latest(location, item_type):
 
 
 class LocationDetailView(DetailView):
-    """
-    Detailed location view
-    """
+    """ Detailed location view. """
     model = Location
     
     def get_context_data(self, **kwargs):
-        location = super(LocationDetailView, self).get_object()
+        #location = super(LocationDetailView, self).get_object()
         context = super(LocationDetailView, self).get_context_data(**kwargs)
-        content_type = ContentType.objects.get_for_model(location)
-        actions = Action.objects.filter(target_content_type=content_type)
-        actions = actions.filter(target_object_id=location.pk)
-        context['title'] = location.name
-        context['actions'] = actions
-        context['tags'] = TagFilter(self.object).get_items()
-        context['blog'] = get_latest(location, 'blog')
-        context['ideas'] = get_latest(location, 'ideas')
-        context['topics'] = get_latest(location, 'topics')
-        context['polls'] = get_latest(location, 'polls')
+        #content_type = ContentType.objects.get_for_model(location)
+        #actions = Action.objects.filter(target_content_type=content_type)
+        #actions = actions.filter(target_object_id=location.pk)
+        context['title'] = self.object.name
+        #context['actions'] = actions
+        #context['tags'] = TagFilter(self.object).get_items()
+        # context['blog'] = get_latest(location, 'blog')
+        # context['ideas'] = get_latest(location, 'ideas')
+        # context['topics'] = get_latest(location, 'topics')
+        # context['polls'] = get_latest(location, 'polls')
         context['is_moderator'] = is_moderator(self.request.user, self.object)
         return context
 

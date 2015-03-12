@@ -38,7 +38,9 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+INTERNAL_IPS = config['internal_ips']
+
+ALLOWED_HOSTS = config['allowed_hosts']
 
 SITE_ID = 1
 
@@ -423,6 +425,3 @@ COMMENT_PAGINATOR_LIMIT = 10
 # Customowe ustawienia dla redisa, wyłącza cache w widokach dla
 # wersji developerskiej.
 USE_CACHE = False
-
-
-INTERNAL_IPS = "10.0.0.11"
