@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 from ideas.views import IdeasDetailView
 from blog.views import NewsDetailView, NewsListView, NewsCreateView, NewsUpdateView
 from topics.views import DiscussionDetailView
@@ -66,7 +66,8 @@ urlpatterns = patterns('',
     url(r'^(?P<slug>[\w-]+)/gallery/delete/(?P<pk>\d+)/', location_gallery_delete, name='remove_picture'),
     url(r'^(?P<slug>[\w-]+)/gallery/(?P<pk>\d+)/', PlacePictureView.as_view(), name='picture'),
     url(r'^(?P<slug>[\w-]+)/gallery/', LocationGalleryView.as_view(), name='gallery'),
-    # Projekty w ramach lokalizacji
+    
+    # PROJEKTY w ramach lokalizacji
     url(r'^(?P<location_slug>[\w-]+)/projects/create/', project_views.CreateProjectView.as_view(), name='project_create'),
     url(r'^(?P<location_slug>[\w-]+)/projects/(?P<slug>[\w-]+)/details/', project_views.ProjectSummaryView.as_view(), name='project_summary'),
     url(r'^(?P<location_slug>[\w-]+)/projects/(?P<slug>[\w-]+)/participants/', project_views.ProjectParticipantsView.as_view(), name='project_participants'),
