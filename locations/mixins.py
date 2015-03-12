@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import ContextMixin
+from django.views.generic import ListView
 
 from rest_framework import viewsets
 

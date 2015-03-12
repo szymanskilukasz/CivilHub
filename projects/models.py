@@ -54,6 +54,9 @@ class SocialProject(BackgroundModelMixin, models.Model):
             return 0
         return int(float(finished_tasks) / float(all_tasks) * 100)
 
+    def get_description(self):
+        return self.description
+
     def get_absolute_url(self):
         return reverse('locations:project_details', kwargs={
             'location_slug': self.location.slug,

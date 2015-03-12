@@ -24,6 +24,7 @@ from locations.mixins import LocationContextMixin
 from locations.models import Location
 from userspace.models import UserProfile
 from places_core.mixins import LoginRequiredMixin
+from maps.models import MapPointer
 
 import actions as project_actions
 from .permissions import check_access
@@ -272,6 +273,14 @@ class CreateProjectView(LoginRequiredMixin, LocationContextMixin, CreateView):
         obj.participants.add(obj.creator)
         obj.save()
         follow(obj.creator.user, obj, actor_only=False)
+        try:
+            for m in json.loads(self.request.POST.get('markers')):
+                marker = MapPointer.objects.create(
+                    content_type=ContentType.objects.get_for_model(SocialProject),
+                    object_pk=obj.pk, latitude=m['lat'], longitude=m['lng'])
+        except Exception:
+            # FIXME: silent fail, powinna być flash message
+            pass
         return super(CreateProjectView, self).form_valid(form)
 
 

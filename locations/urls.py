@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, include, url
 from ideas.views import IdeasDetailView
-from blog.views import NewsDetailView
+from blog.views import NewsDetailView, NewsListView
 from topics.views import DiscussionDetailView
 from polls.views import PollDetails, PollResults
 from gallery.views import LocationGalleryView, PlacePictureView, \
@@ -40,7 +40,8 @@ urlpatterns = patterns('',
     # Location news entries sub-views
     url(r'^(?P<slug>[\w-]+)/news/create', LocationNewsCreate.as_view(), name='news_create'),
     url(r'^(?P<place_slug>[\w-]+)/news/(?P<slug>[\w-]+)', NewsDetailView.as_view(), name='news_detail'),
-    url(r'^(?P<slug>[\w-]+)/news/', LocationNewsList.as_view(), name='news'),
+    #url(r'^(?P<slug>[\w-]+)/news/', LocationNewsList.as_view(), name='news'),
+    url(r'^(?P<location_slug>[\w-]+)/news/', NewsListView.as_view(), name='news'),
     # Location forum (discussions)
     url(r'^(?P<slug>[\w-]+)/discussion/create/', LocationDiscussionCreate.as_view(), name='new_topic'),
     url(r'^(?P<place_slug>[\w-]+)/discussion/(?P<slug>[\w-]+)/', DiscussionDetailView.as_view(), name='topic'),
