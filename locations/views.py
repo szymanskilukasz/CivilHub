@@ -65,10 +65,15 @@ class CapitalAPI(APIView):
         from django.contrib.gis.geoip import GeoIP
         code = GeoIP().country(get_ip(self.request))\
                       .get('country_code', settings.DEFAULT_COUNTRY_CODE)
+        country = None
         try:
             country = Country.objects.get(code=code)
         except Country.DoesNotExist:
+            pass
+        try:
             country = Country.objects.get(code=settings.DEFAULT_COUNTRY_CODE)
+        except Country.DoesNotExist:
+            raise Http404
         capital = country.get_capital()
         if capital is not None:
             serializer = LocationListSerializer(capital)

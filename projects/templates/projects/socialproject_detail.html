@@ -88,20 +88,19 @@
         </div>
       {% endif %}</div><!-- ./ .task-Container-right -->
 
-      {% comment %} Komentarze {% endcomment %}
-      {% with object|content_type as ctype %}<div>
+      {% if active_task %}{% with active_task|content_type as ctype %}<div>
         <p>
-          {% trans "Comments" %}: <span class="badge comment-count">{{ object.customcomment_set.count }}</span>
-          <a class="comment-toggle" data-target="{{ object.pk }}" href="#">{% trans "Hide comments" %}</a>
+          {% trans "Comments" %}: <span class="badge comment-count">{{ active_task.customcomment_set.count }}</span>
+          <a class="comment-toggle" data-target="{{ active_task.pk }}" href="#">{% trans "Hide comments" %}</a>
         </p>
       </div>
-      <input type="hidden" id="target-id" value="{{ object.pk }}" />
+      <input type="hidden" id="target-id" value="{{ active_task.pk }}" />
       <input type="hidden" id="target-label" value="projects" />
       <input type="hidden" id="target-type" value="{{ ctype.pk }}" />
       <input type="hidden" id="target-user" value="{{ user.username }}" />
       <input type="hidden" id="target-avatar" value="{{ user.profile.avatar.url }}" />
       <input type="hidden" id="target-user-fullname" value="{{ user.get_full_name }}" />
-      {% include 'comments/commentlist.html' %}{% endwith %}
+      {% include 'comments/commentlist.html' %}{% endwith %}{% endif %}
 
     </div>
   </div>

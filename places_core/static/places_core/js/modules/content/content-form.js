@@ -71,7 +71,6 @@ function ($, utils) {
       var $i = $('<input type="hidden" name="markers" />');
 
       $('#content-create-form').append($i);
-      alert($i.html());
 
       map = $('.mapinput').mapinput({
         single: false,
