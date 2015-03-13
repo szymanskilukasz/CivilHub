@@ -1,6 +1,7 @@
 {% extends 'locations/index.html' %}{% load staticfiles i18n civil_tags %}
 {% block title %} {{ location }}, {% trans "Discussions" %} | CivilHub {% endblock %}
 {% block content %}<div class="container">
+	{% include 'topics/navbar.html' %}
 	{% if object_list.count %}<div class="col-sm-9 content-container contentPX main-content">
 		<div class="discussion-list-entry">
 			<div class="custom-label-list">
@@ -13,23 +14,21 @@
 				</span>{% endfor %}
 			</div>
 			<div id="discussions" class="discussion-list custom-tablelike">
-				{% for discussion in object_list %}<div class="row topic-list-entry-custom-list-entry">
-					<div class="backbone-collection-list">
-						<div class="row">
-			        <div class="col-sm-5 excerpt">
-		            <a href="{{ discussion.get_absolute_url }}">{{ discussion }}</a>
-			        </div>
-			        <div class="col-sm-3 category">
-		            <label class="label label-default">{{ discussion.category.name }}</label>
-			        </div>
-			        <div class="col-sm-4 custom-align-r">
-		            <span class="count">{{ discussion.entry_set.count }}</span>
-		            <img src="{{ discussion.creator.profile.avatar.url }}" alt="{{ discussion.creator.profile }}" class="user-avatar-minithumb" />
-		            <a href="{{ discussion.creator.profile.get_absolute_url }}"><span class="user-window-toggle" data-target="{{ discussion.creator.pk }}">{{ discussion.creator.profile }}</span></a>
-		            <span class="date-created">{{ discussion.date_created|timesince }}</span>
-			        </div>
-			      </div>
-			    </div>
+				{% for discussion in object_list %}<div class="topic-list-entry custom-list-entry">
+					<div class="row">
+		        <div class="col-sm-5 excerpt">
+	            <a href="{{ discussion.get_absolute_url }}">{{ discussion }}</a>
+		        </div>
+		        <div class="col-sm-3 category">
+	            <label class="label label-default">{{ discussion.category.name }}</label>
+		        </div>
+		        <div class="col-sm-4 custom-align-r">
+	            <span class="count">{{ discussion.entry_set.count }}</span>
+	            <img src="{{ discussion.creator.profile.avatar.url }}" alt="{{ discussion.creator.profile }}" class="user-avatar-minithumb" />
+	            <a href="{{ discussion.creator.profile.get_absolute_url }}"><span class="user-window-toggle" data-target="{{ discussion.creator.pk }}">{{ discussion.creator.profile }}</span></a>
+	            <span class="date-created">{{ discussion.date_created|timesince }}</span>
+		        </div>
+		      </div>
 				</div>{% endfor %}
 			</div>
 		</div>
