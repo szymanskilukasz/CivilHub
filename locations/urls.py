@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
-from ideas.views import IdeasDetailView
+from ideas.views import IdeasListView, IdeasDetailView
 from blog.views import NewsDetailView, NewsListView, NewsCreateView, NewsUpdateView
 from topics.views import DiscussionDetailView
 from polls.views import PollDetails, PollResults
@@ -34,11 +34,12 @@ urlpatterns = patterns('',
     url(r'^(?P<slug>[\w-]+)/search/$', LocationContentSearch.as_view(), name='tag_search_index'),
     # wyszukiwanie treści w/g kategorii
     url(r'^(?P<slug>[\w-]+)/filter/(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<category>\d+)/$', LocationContentFilter.as_view(), name='category_search'),
-    # Location ideas sub-views
-    url(r'^(?P<slug>[\w-]+)/ideas/create', LocationIdeaCreate.as_view(), name='new_idea'),
-    url(r'^(?P<place_slug>[\w-]+)/ideas/(?P<slug>[\w-]+)', IdeasDetailView.as_view(), name='idea_detail'),
-    url(r'^(?P<slug>[\w-]+)/ideas', LocationIdeasList.as_view(), name='ideas'),
-    
+
+    # POMYSŁY
+    url(r'^(?P<slug>[\w-]+)/ideas/create/', LocationIdeaCreate.as_view(), name='new_idea'),
+    url(r'^(?P<place_slug>[\w-]+)/ideas/(?P<slug>[\w-]+)/', IdeasDetailView.as_view(), name='idea_detail'),
+    url(r'^(?P<location_slug>[\w-]+)/ideas/', IdeasListView.as_view(), name='ideas'),
+
     # BLOG
     url(r'^(?P<location_slug>[\w-]+)/news/create', NewsCreateView.as_view(), name='news_create'),
     url(r'^(?P<location_slug>[\w-]+)/news/(?P<slug>[\w-]+)/update/', NewsUpdateView.as_view(), name='news_update'),
