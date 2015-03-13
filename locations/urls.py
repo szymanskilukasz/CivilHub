@@ -2,7 +2,7 @@
 from django.conf.urls import patterns, url
 from ideas.views import IdeasListView, IdeasDetailView
 from blog.views import NewsDetailView, NewsListView, NewsCreateView, NewsUpdateView
-from topics.views import DiscussionDetailView
+from topics.views import DiscussionDetailView, DiscussionListView
 from polls.views import PollDetails, PollResults
 from gallery.views import LocationGalleryView, PlacePictureView, \
                            LocationGalleryCreateView, location_gallery_delete, \
@@ -49,9 +49,9 @@ urlpatterns = patterns('',
     # FORUM (dyskusje)
     url(r'^(?P<slug>[\w-]+)/discussion/create/', LocationDiscussionCreate.as_view(), name='new_topic'),
     url(r'^(?P<place_slug>[\w-]+)/discussion/(?P<slug>[\w-]+)/', DiscussionDetailView.as_view(), name='topic'),
-    url(r'^(?P<slug>[\w-]+)/discussion/', LocationDiscussionsList.as_view(), name='discussions'),
+    url(r'^(?P<location_slug>[\w-]+)/discussion/', DiscussionListView.as_view(), name='discussions'),
     url(r'^(?P<slug>[\w-]+)/discussions/', ajax_discussion_list, name='ajaxlist'),
-    #url(r'^(?P<slug>[\w-]+)/discussions/(?P<limit>[\w-]+)/', location_discussion_list, name='dsublist'),
+
     # Location polls (create, edit, delete etc. just for this location)
     url(r'^(?P<slug>[\w-]+)/polls/create/', LocationPollCreate.as_view(), name='new_poll'),
     url(r'^(?P<place_slug>[\w-]+)/polls/(?P<slug>[\w-]+)/results/', PollResults.as_view(), name='results'),
