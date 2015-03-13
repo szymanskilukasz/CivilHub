@@ -311,13 +311,12 @@ class Location(models.Model, BackgroundModelMixin):
         return sorted(qs, key=lambda x: x['date_created'], reverse=True)
 
     def __str__(self):
-        # lang = get_language().split('-')[0]
-        # alt = self.names.filter(language=lang)
-        # if not len(alt):
-        #     return self.name
-        # else:
-        #     return alt[0].altername
-        return self.name
+        lang = get_language().split('-')[0]
+        alt = self.names.filter(language=lang)
+        if not len(alt):
+            return self.name
+        else:
+            return alt[0].altername
 
 
 @python_2_unicode_compatible
