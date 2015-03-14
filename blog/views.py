@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
-from django.db.models import FieldDoesNotExist
 from django.utils.translation import ugettext as _
 from django.views.generic import DetailView
 from django.views.generic.list import ListView
@@ -12,7 +11,7 @@ from maps.forms import AjaxPointerForm
 from maps.models import MapPointer
 from locations.links import LINKS_MAP as links
 from locations.models import Location
-from locations.mixins import ContentMixin, LocationContextMixin
+from locations.mixins import LocationContextMixin, SearchableListMixin
 from places_core.mixins import LoginRequiredMixin
 from places_core.permissions import is_moderator
 from places_core.helpers import get_time_difference, sort_by_locale
@@ -47,49 +46,19 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
     fields = ['name', 'description']
 
 
-class NewsListView(BlogContextMixin, ListView):
+class NewsListView(BlogContextMixin, SearchableListMixin):
     """ Lista projektów w ramach jednej lokalizacji. """
     model = News
     paginate_by = 25
-
-    def get_queryset(self):
-        # Ograniczamy wyniki tylko do jednej lokalizacji
-        location_slug = self.kwargs.get('location_slug')
-        if location_slug is None:
-            qs = self.model.objects.all()
-        else:
-            qs = self.model.objects.filter(location__slug=location_slug)
-
-        # Filtrujemy wyniki tylko w ramach jednej kategorii
-        try:
-            category_pk = int(self.request.GET.get('category'))
-        except (ValueError, TypeError):
-            category_pk = None
-        if category_pk is not None:
-            qs = qs.filter(category__pk=category_pk)
-
-        # Umożliwiamy proste wyszukiwanie po tytułach
-        qs = qs.filter(title__icontains=self.request.GET.get('haystack', ''))
-
-        # Ustawiamy maksymalny przedział czasowy do przeszukania...
-        time_limit = get_time_difference(self.request.GET.get('time', 'all'))
-        if time_limit is not None:
-            qs = qs.filter(date_created__gte=time_limit)
-
-        # ...i kolejność wyświetlania wyników.
-        order = self.request.GET.get('sortby', '-date_created')
-        try:
-            self.model._meta.get_field_by_name(order.replace('-', ''))
-            qs = qs.order_by(order)
-        except FieldDoesNotExist:
-            pass
-
-        return qs
 
     def get_context_data(self):
         context = super(NewsListView, self).get_context_data()
         context['categories'] = Category.objects.all()
         return context
+
+    def get_queryset(self):
+        qs = super(NewsListView, self).get_queryset()
+        return qs.filter(title__icontains=self.request.GET.get('haystack', ''))
 
     
 class NewsDetailView(BlogContextMixin, DetailView):
