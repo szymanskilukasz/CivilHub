@@ -435,9 +435,11 @@ class ProjectForumDetailView(ProjectForumContextMixin, ListView):
 
 
 class ProjectForumAnswerCreateView(LoginRequiredMixin, CreateView, ProjectForumContextMixin):
-    """ Tworzenie dyskusji - GET jest tutaj tylko do celów testowych, decelowo
+    """
+    Odpowiadanie na dyskusję - GET jest tutaj tylko do celów testowych, decelowo
     formularz ma się znajdować przy liście wszystkich odpowiedzi, a tutaj
-    obsługujemy tylko samo tworzenie nowego obiektu. """
+    obsługujemy tylko samo tworzenie nowego obiektu.
+    """
     model = SocialForumEntry
     form_class = DiscussionAnswerForm
 
