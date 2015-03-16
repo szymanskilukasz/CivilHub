@@ -32,7 +32,8 @@ from gallery.image import handle_tmp_image
 import actions as project_actions
 from .permissions import check_access
 from .models import SocialProject, TaskGroup, Task, SocialForumTopic, SocialForumEntry
-from .forms import CreateProjectForm, UpdateProjectForm, TaskGroupForm, TaskForm
+from .forms import CreateProjectForm, UpdateProjectForm, TaskGroupForm, TaskForm, \
+                   DiscussionAnswerForm
 
 
 @require_POST
@@ -383,12 +384,17 @@ class ProjectBackgroundView(ProjectAccessMixin, FormView):
 
 class ProjectForumContextMixin(ProjectContextMixin):
     """ Mixin dla podstron z dyskusjami do projektu. """
-    def get_context_data(self):
+    def get_context_data(self, form=None):
         context = super(ProjectForumContextMixin, self).get_context_data()
         project_slug = self.kwargs.get('project_slug')
         if project_slug is not None:
             context['object'] = get_object_or_404(SocialProject, slug=project_slug)
             context['location'] = context['object'].location
+        if form is not None:
+            context['form'] = form
+        discussion_slug = self.kwargs.get('discussion_slug')
+        if discussion_slug is not None:
+            context['discussion'] = get_object_or_404(SocialForumTopic, slug=discussion_slug)
         return context
 
 
@@ -416,3 +422,36 @@ class ProjectForumDetailView(ProjectForumContextMixin, ListView):
         if discussion_slug is not None:
             qs = qs.filter(topic__slug=discussion_slug)
         return qs
+
+    def get_context_data(self):
+        context = super(ProjectForumDetailView, self).get_context_data()
+        discussion_slug = self.kwargs.get('discussion_slug')
+        if discussion_slug is not None:
+            context['answer_form'] = DiscussionAnswerForm(initial={
+                'topic': context['discussion'],
+                'creator': self.request.user,
+            })
+        return context
+
+
+class ProjectForumAnswerCreateView(LoginRequiredMixin, CreateView, ProjectForumContextMixin):
+    """ Tworzenie dyskusji - GET jest tutaj tylko do celów testowych, decelowo
+    formularz ma się znajdować przy liście wszystkich odpowiedzi, a tutaj
+    obsługujemy tylko samo tworzenie nowego obiektu. """
+    model = SocialForumEntry
+    form_class = DiscussionAnswerForm
+
+    def get_success_url(self):
+        return self.object.topic.get_absolute_url()
+
+    def get_initial(self):
+        initial = super(ProjectForumAnswerCreateView, self).get_initial()
+        discussion_slug = self.kwargs.get('discussion_slug')
+        if discussion_slug is not None:
+            initial['topic'] = get_object_or_404(SocialForumTopic, slug=discussion_slug)
+        initial['creator'] = self.request.user
+        return initial
+
+    def form_valid(self, form):
+        form.instance.creator = self.request.user
+        return super(ProjectForumAnswerCreateView, self).form_valid(form)
