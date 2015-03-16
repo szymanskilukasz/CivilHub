@@ -1,0 +1,8 @@
+{% extends 'projects/index.html' %}{% load staticfiles i18n civil_tags %}
+{% block content %}<ul>{% for entry in object_list %}
+  <li>
+  	<h2>{{ entry.creator.profile }}</h2>
+  	<div>{{ entry.content|safe }}</div>
+  </li>
+{% endfor %}</ul>
+{% include 'places_core/pagination.html' %}{% endblock %}

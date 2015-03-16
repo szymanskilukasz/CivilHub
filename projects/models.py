@@ -22,7 +22,7 @@ from .signals import project_created_action, project_task_action
 
 
 def get_upload_path(instance, filename):
-    """ Ustawia ścieżkę i losową nazwę dla obrazu. """
+    """ Ustawia ścieżkę i losową nazwę dla obrazu tła projektu. """
     return 'img/projects/' + uuid4().hex + os.path.splitext(filename)[1]
 
 
@@ -182,6 +182,14 @@ class SocialForumTopic(SlugifiedModelMixin):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('projects:discussion', 
+            kwargs={
+                'project_slug': self.project.slug,
+                'discussion_slug': self.slug,
+            }
+        )
+
     def save(self, *args, **kwargs):
         self.description = sanitizeHtml(self.description)
         super(SocialForumTopic, self).save(*args, **kwargs)
@@ -194,6 +202,13 @@ class SocialForumEntry(models.Model):
     content = models.TextField(verbose_name=_(u"content"), default="")
     date_created = models.DateTimeField(auto_now_add=True, verbose_name=_(u"date created"))
     date_changed = models.DateTimeField(auto_now=True, verbose_name=_("date edited"))
+
+    order_with_respect_to = 'topic'
+
+    class Meta:
+        ordering = ['date_created',]
+        verbose_name = _(u"forum entry")
+        verbose_name_plural = _(u"forum entries")
 
     def save(self, *args, **kwargs):
         self.content = sanitizeHtml(self.content)
