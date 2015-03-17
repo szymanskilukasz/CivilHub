@@ -2,6 +2,9 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+
+from haystack.forms import ModelSearchForm
+
 from .models import AbuseReport
 
 
@@ -38,3 +41,8 @@ class AbuseReportForm(forms.ModelForm):
     class Meta:
         model = AbuseReport
         fields = ('content_type', 'object_pk', 'comment',)
+
+
+class CivilSearchForm(ModelSearchForm):
+    """ """
+    pass
