@@ -1,4 +1,5 @@
 User-agent: * 
+Allow: /
 Disallow: /rest/
 
 https://civilhub.org/sitemap.xml
