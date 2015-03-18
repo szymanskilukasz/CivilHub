@@ -20,8 +20,12 @@ function (_, Backbone) {
     template: _.template($('#content-item-tpl').html()),
     
     render: function () {
+      var imgUrl = utils.isRetina() ? this.model.get('retina_thumbnail')
+                                    : this.model.get('thumbnail');
       this.$el.html(this.template(this.model.toJSON()));
       this.$('.locBoxIcon').find('a').tooltip();
+      this.$('.locBoxHeader:first')
+        .css('background-image', "url(" + imgUrl + ")");
       return this;
     }
   });

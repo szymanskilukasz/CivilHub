@@ -16,3 +16,9 @@ python-xapian
 binutils
 libproj-dev
 gdal-bin
+nodejs
+nodejs-legacy
+npm
+
+npm install -g less
+npm install -g requirejs
