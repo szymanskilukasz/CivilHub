@@ -5,15 +5,13 @@
 // Widok pojedynczego elementu dla paginowalnej
 // kolekcji obsługującej filtry i lazy-loader.
 
-define(['underscore', 'backbone'],
+define(['underscore', 'backbone', 'js/modules/utils/utils'],
 
-function (_, Backbone) {
+function (_, Backbone, utils) {
     
   "use strict";
   
   var ContentView = Backbone.View.extend({
-      
-    tagName: 'div',
     
     className: 'col-sm-4 locBoxH',
     

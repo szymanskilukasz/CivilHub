@@ -1,11 +1,4 @@
 # -*- coding: utf-8 -*-
-
-# Program kompresujący wszystkie pliki less i js projektu.
-#
-# OPCJE
-#   -m <nazwa_modułu> Wybrany moduł js do skompresowania (np. -m idea-create)
-#   --only-css        Kompresuj tylko style CSS
-
 import os, subprocess, json
 
 from optparse import make_option
@@ -40,6 +33,13 @@ def compress_file(filename):
 
 
 class Command(BaseCommand):
+    """
+    Program kompresujący wszystkie pliki less i js projektu.
+
+    OPCJE
+        -m <nazwa_modułu> Wybrany moduł js do skompresowania (np. -m idea-create)
+        --only-css        Kompresuj tylko style CSS
+    """
     option_list = BaseCommand.option_list + (
         make_option('-m', dest='module', help=u"Kompresuj wybrany moduł"),
         make_option('--css-only',
