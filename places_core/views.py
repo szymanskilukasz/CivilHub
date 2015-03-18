@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import get_current_site
 from django.shortcuts import render
+from django.template import RequestContext
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -161,11 +162,11 @@ class FileServeView(View):
         return HttpResponse(content, content_type="text/plain")
 
 
-# class CivilSearchView(SearchView):
-#     """ Nakładka na haystack-search, bo mamy problemy z tłumaczeniami. """
-#     def __init__(self, template=None, load_all=True, form_class=None, searchqueryset=None, context_class=RequestContext, results_per_page=None):
-#         super(CivilSearchView, self).__init__(template, load_all, searchqueryset, context_class, results_per_page)
-#         self.form_class = CivilSearchForm
+class CivilSearchView(SearchView):
+    """ Nakładka na haystack-search, bo mamy problemy z tłumaczeniami. """
+    def __init__(self, template=None, load_all=True, form_class=None, searchqueryset=None, context_class=RequestContext, results_per_page=None):
+        super(CivilSearchView, self).__init__(template, load_all, searchqueryset, context_class, results_per_page)
+        self.form_class = CivilSearchForm
 
 
 class CreateAbuseReport(CreateView):
