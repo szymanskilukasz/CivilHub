@@ -16,23 +16,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='SocialForumTopic',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=200, verbose_name='name')),
-                ('description', models.TextField(default='', verbose_name='description')),
-                ('date_created', models.DateTimeField(auto_now_add=True, verbose_name='date created')),
-                ('date_changed', models.DateTimeField(auto_now=True, verbose_name='date edited')),
-                ('is_closed', models.BooleanField(default=False, verbose_name='closed')),
-                ('creator', models.ForeignKey(related_name='social_topics', verbose_name='creator', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'verbose_name': 'discussion',
-                'verbose_name_plural': 'discussions',
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='SocialProject',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
