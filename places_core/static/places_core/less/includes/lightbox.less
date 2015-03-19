@@ -235,6 +235,9 @@
   background-repeat: no-repeat;
   cursor: pointer;
   &.content-image-bg {
-    width: 572px;
+    width: 100%;
+    @media (min-width: 768px) {
+      width: 572px;
+    }
   }
 }
