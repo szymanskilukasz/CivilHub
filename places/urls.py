@@ -131,7 +131,6 @@ urlpatterns += patterns('',
     # REST server
     url(r'^rest/', include(router.urls, namespace='rest')),
     # Haystack - wyszukiwarka
-    #url(r'^search/', include('haystack.urls', namespace='search')),
     url(r'^search/', include('haystack.urls', namespace='search')),
     # django-messages: wiadomości pomiędzy użytkownikami
     url(r'^messages/', include('postman.urls')),
