@@ -1,14 +1,9 @@
-{% extends 'places_core/base.html' %}
-{% load staticfiles i18n %}
-
-{% comment %}
-    Podziękowanie użytkownikowi za rejestrację w serwisie.
-{% endcomment %}
-
-{% block content %}
-<div>
-    <p>{% blocktrans %}Thank You for register in CivilHub.{% endblocktrans %}</p>
-    <p>{% blocktrans %}You can now, login using email adres that you give during registration{% endblocktrans %}</p>
-    <p><a href="{% url 'user:login' %}">{% trans "Login" %}</a></p>
-</div>
-{% endblock %}
+{% extends 'places_core/base.html' %}{% load staticfiles i18n %}
+{% block content %}<div>
+  <p>{% blocktrans %}Thank You for register in CivilHub.{% endblocktrans %}</p>
+  <p>{% blocktrans %}You can now, login using email adres that you give during registration{% endblocktrans %}</p>
+  <p><a href="{% url 'user:login' %}">{% trans "Login" %}</a></p>
+  <ul>{% for location in object_list %}
+  	<li>{{ location }}</li>
+  {% endfor %}</ul>
+</div>{% endblock %}
