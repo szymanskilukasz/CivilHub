@@ -1,0 +1,18 @@
+{% extends 'places_core/base.html' %}{% load i18n staticfiles civil_tags %}
+{% block require_scripts %}<script src="{% static 'places_core' %}/js/{% js_path %}/testpage.js"></script>{% endblock %}
+{% block content %}<h1>Test Page</h1>
+<p><a href="#" class="btn btn-success cd-bouncy-nav-trigger">{% trans "Trigger" %}</a></p>
+<div class="cd-bouncy-nav-modal">
+	<select{% if location %} data-location="{{ location.slug }}"{% endif %}></select>
+	<nav>
+		<ul class="cd-bouncy-nav">
+			<li><a class="bouncy-option" data-content="news" href="#">{% trans "News" %}</a></li>
+			<li><a class="bouncy-option" data-content="ideas" href="#">{% trans "Idea" %}</a></li>
+			<li><a class="bouncy-option" data-content="discussion" href="#">{% trans "Discussion" %}</a></li>
+			<li><a class="bouncy-option" data-content="polls" href="#">{% trans "Poll" %}</a></li>
+			<li><a class="bouncy-option" data-content="projects" href="#">{% trans "Project" %}</a></li>
+			<li><a class="bouncy-option" data-content="gallery" href="#">{% trans "Gallery" %}</a></li>
+		</ul>
+	</nav>
+	<a href="#0" class="cd-close">Close modal</a>
+</div>{% endblock %}

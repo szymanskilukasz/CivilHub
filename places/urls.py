@@ -166,7 +166,7 @@ urlpatterns += patterns('',
     url(r'^$', HomeView.as_view()),
     
     # Tylko dla testów !!!
-    url(r'^sometestpage/', PageView.as_view(page='404')),
+    url(r'^sometestpage/', PageView.as_view(page='testpage')),
     
     #url(r'^$', staticpages.views.HomeView.as_view()),
     url(r'^', include('articles.urls', namespace='articles')),
