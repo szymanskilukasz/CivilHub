@@ -150,7 +150,7 @@ def obj_ct_id(model_name):
 
     if model_name == 'article':
         model = Article
-    if model_name == 'idea':
+    elif model_name == 'idea':
         model = Idea
     elif model_name == 'news':
         model = News
