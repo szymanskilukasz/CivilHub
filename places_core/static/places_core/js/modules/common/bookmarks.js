@@ -1,5 +1,6 @@
 //
 // bookmarks.js
+// ============
 
 // Obsługa zakładek dla użytkownika
 

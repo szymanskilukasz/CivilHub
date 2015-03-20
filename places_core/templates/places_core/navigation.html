@@ -65,8 +65,9 @@
                 <div class="cd-bouncy-nav-modal">
                     <div class="cd-bouncy-select-location"><h2>{% trans "Actually creating in" %}:</h2>
                         <select{% if location %} data-location="{{ location.slug }}"{% endif %} class="form-control input-sm">
-                      {% if location %}<option value="{{ location.slug }}">{{ location }}</option>{% endif %}
-                    </select></div>
+                            {% if location %}<option value="{{ location.slug }}">{{ location }}</option>{% endif %}
+                        </select>
+                    </div>
                     <nav>
                         <ul class="cd-bouncy-nav">
                             <li><a class="bouncy-option" data-content="news" href="#">{% trans "News" %}</a></li>

@@ -11,13 +11,14 @@ require(['jquery'], function ($) {
 
 function SubMenu ($el) {
 	this.$el = $el;
-	this.$submenu = this.$el.parent().next('.entry-submenu');
 	this.is_menu_opened = false;
+	this.$submenu = this.$el
+		.parent()
+		.next('.entry-submenu');
 	this.initialize();
 }
 
 SubMenu.prototype.initialize = function () {
-	var element = this.$el;
   this.$el.on('click', function (e) {
   	e.preventDefault();
   	SubMenu.prototype.toggle.call(this);
