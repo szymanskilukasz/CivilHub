@@ -395,10 +395,13 @@ class NewUserView(ListView):
         if country_code is None:
             country_code = settings.DEFAULT_COUNTRY_CODE
         # W pierwszej kolejności próbujemy pobrać kraj i stolicę
-        qs = qs.filter(country_code=country_code, kind__in=['country', 'PPLC'])
-        # TODO: i największe miasta w kraju
-        # ...
-        return qs
+        most_important = self.model.filter(country_code=country_code,
+                                           kind__in=['country', 'PPLC'])
+        # I największe miasta w kraju
+        qs = qs.filter(country_code=country_code)\
+               .exclude(kind__in=['country', 'PPLC'])\
+               .order_by('-users')[18]
+        return most_important | qs
 
     def get(self, request):
         # ODKOMENTOWAĆ PO ZAKONCZENIU TESTOWANIA!!!
@@ -505,7 +508,7 @@ def login(request):
                     auth.login(request, user)
                     login_data = LoginData(
                         user = user,
-                        address = get_ip(request)
+                        address = ip.get_ip(request)
                     )
                     login_data.save()
                     datas = LoginData.objects.filter(user=user).order_by('-date')
