@@ -10,7 +10,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.contenttypes.models import ContentType
-from django.views.generic import DetailView, UpdateView, TemplateView, ListView
+from django.views.generic import DetailView, UpdateView, TemplateView
 from django.views.generic.edit import FormView
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ObjectDoesNotExist
@@ -40,6 +40,7 @@ from polls.models import Poll
 from topics.models import Discussion
 from bookmarks.models import Bookmark
 from locations.models import Location
+from locations.helpers import get_most_followed
 from locations.serializers import ContentPaginatedSerializer, SimpleLocationSerializer
 from forms import *
 from .helpers import profile_activation, random_username, create_username
@@ -289,7 +290,7 @@ def register(request):
                 salt.update(settings.SECRET_KEY + str(datetime.datetime.now().time))
                 register_demand = RegisterDemand.objects.create(
                     activation_link = salt.hexdigest(),
-                    ip_address      = get_ip(request),
+                    ip_address      = ip.get_ip(request),
                     user            = user,
                     email           = user.email,
                     lang            = translation.get_language()
@@ -380,34 +381,26 @@ def activate(request, activation_link=None):
         #return render(request, 'userspace/active.html', ctx)
 
 
-class NewUserView(ListView):
+class NewUserView(TemplateView):
     """
     Witamy nowego użytkownika i przedstawiamy mu lokalizacje, które mógłby chcieć
     obserwować. Widok jest "jednorazowy", tzn. pokazujemy go tylko nowo-zalogowanym.
     Przekierowanie znajduje się w metodzie GET.
     """
-    model = Location
     template_name = 'userspace/active.html'
 
-    def get_queryset(self):
-        qs = super(NewUserView, self).get_queryset()
+    def get_context_data(self):
         country_code = GeoIP().country_code(ip.get_ip(self.request))
         if country_code is None:
             country_code = settings.DEFAULT_COUNTRY_CODE
-        # W pierwszej kolejności próbujemy pobrać kraj i stolicę
-        most_important = self.model.filter(country_code=country_code,
-                                           kind__in=['country', 'PPLC'])
-        # I największe miasta w kraju
-        qs = qs.filter(country_code=country_code)\
-               .exclude(kind__in=['country', 'PPLC'])\
-               .order_by('-users')[18]
-        return most_important | qs
+        context = super(NewUserView, self).get_context_data()
+        context['locations'] = get_most_followed(country_code)
+        return context
 
     def get(self, request):
-        # ODKOMENTOWAĆ PO ZAKONCZENIU TESTOWANIA!!!
-        # if request.session.get('new_user') is None:
-        #     return redirect('/activity/')
-        # del request.session['new_user']
+        if request.session.get('new_user') is None:
+            return redirect('/activity/')
+        del request.session['new_user']
         return super(NewUserView, self).get(request)
 
 
@@ -515,9 +508,6 @@ def login(request):
                     if len(datas) > 5:
                         for i in range (len(datas) - 5):
                             datas[i].delete()
-                    elif len(datas) == 1:
-                        # Jeżeli użytkownik loguje się pierwszy raz, pokazujemy mu listę
-                        return redirect('/places/?new_user=true')
                     n = request.POST.get('next')
                     if not len(n): n = '/activity/'
                     return redirect(n)
