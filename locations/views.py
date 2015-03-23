@@ -370,7 +370,7 @@ class LocationBackgroundView(FormView):
 class CreateLocationView(LoginRequiredMixin, CreateView):
     """ Add new location. """
     model = Location
-    fields = ['name', 'description', 'latitude', 'longitude', 'image']
+    fields = ['name', 'description', 'latitude', 'longitude']
     form_class = LocationForm
 
     def get_context_data(self, **kwargs):
