@@ -393,10 +393,17 @@ class UpdateLocationView(LocationAccessMixin, UpdateView):
         location = super(UpdateLocationView, self).get_object()
         context = super(UpdateLocationView, self).get_context_data(**kwargs)
         context['title'] = location.name
+        context['countries'] = Country.objects.all()
         context['subtitle'] = _('Edit this location')
         context['action'] = 'edit'
         context['appname'] = 'location-create'
         return context
+
+    def form_valid(self, form):
+        """ We have to cleanup old markers to save changes. """
+        for mp in MapPointer.objects.for_model(form.instance):
+            mp.delete()
+        return super(UpdateLocationView, self).form_valid(form)
 
 
 class DeleteLocationView(LocationAccessMixin, DeleteView):

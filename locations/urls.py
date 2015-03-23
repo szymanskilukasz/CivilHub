@@ -88,7 +88,6 @@ urlpatterns = patterns('',
     # Generic location views
     url(r'^(?P<slug>[\w-]+)/activity/', LocationActionsView.as_view(), name='activity'),
     url(r'delete/(?P<slug>[\w-]+)/', DeleteLocationView.as_view(), name='delete'),
-    url(r'delete/(?P<slug>[\w-]+)/', DeleteLocationView.as_view(), name='delete'),
     url(r'update/(?P<slug>[\w-]+)/', UpdateLocationView.as_view(), name='update'),
 
     # Ajaxy functions
