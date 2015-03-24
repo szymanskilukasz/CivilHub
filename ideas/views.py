@@ -102,8 +102,7 @@ class IdeasListView(IdeasContextMixin, SearchableListMixin):
             qs = qs.filter(status=True)
         elif status == 'False':
             qs = qs.filter(status=False)
-        qs = qs.filter(name__icontains=self.request.GET.get('haystack', ''))
-        return qs
+        return qs.filter(name__icontains=self.request.GET.get('haystack', ''))
 
 
 class IdeasDetailView(DetailView):
